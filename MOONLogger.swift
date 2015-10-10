@@ -91,7 +91,7 @@ struct MOONLogger {
     private static let privateSharedLogger = MOONLogger()
     private let file: NSFileHandle?
     
-    init() {
+    private init() {
         file = NSFileHandle(forUpdatingAtPath: MOONLogger.getFilePath())
     }
     
