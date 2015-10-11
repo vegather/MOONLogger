@@ -25,12 +25,8 @@ private let SHOULD_SAVE_LOG_TO_FILE = false
 private let SHOULD_INCLUDE_TIME     = true
 private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
 
-// Enables a call like MOONLog() to simply print a new line
-func MOONLog(filePath: String = __FILE__, functionName: String = __FUNCTION__, lineNumber: Int = __LINE__) {
-    MOONLog("", filePath: filePath, functionName: functionName, lineNumber: lineNumber)
-}
 
-func MOONLog(message: String, filePath: String = __FILE__, functionName: String = __FUNCTION__, lineNumber: Int = __LINE__) {
+func MOONLog(message: String = "", filePath: String = __FILE__, functionName: String = __FUNCTION__, lineNumber: Int = __LINE__) {
     dispatch_async(logQueue) {
         var printString = ""
 		
@@ -48,7 +44,7 @@ func MOONLog(message: String, filePath: String = __FILE__, functionName: String 
             var tensOfASecondString = "\(tensOfASecond)"
             
             while tensOfASecondString.characters.count < 3 {
-                tensOfASecondString = "0" + tensOfASecondString
+                tensOfASecondString += "0"
             }
 			
 			// Makes sure there are no more than 3 millisecond digits
@@ -66,14 +62,14 @@ func MOONLog(message: String, filePath: String = __FILE__, functionName: String 
         var functionNameToPrint = functionName
         
         if fileName.characters.count > 25 {
-            fileName = ((fileName as NSString).substringToIndex(22) as String) + "..."
+            fileName = fileName.substringToIndex(fileName.startIndex.advancedBy(22)) + "..."
         }
         
-        if functionName.characters.count > 45 {
-            functionNameToPrint = ((functionName as NSString).substringToIndex(42) as String) + "..."
+        if functionName.characters.count > 40 {
+            functionNameToPrint = functionName.substringToIndex(functionName.startIndex.advancedBy(37)) + "..."
         }
         
-        printString += String(format: "l:%-5d %-25s  %-45s  %@",
+        printString += String(format: "l:%-5d %-25s  %-40s  %@",
             lineNumber,
             COpaquePointer(fileName.cStringUsingEncoding(NSUTF8StringEncoding)!),
             COpaquePointer(functionNameToPrint.cStringUsingEncoding(NSUTF8StringEncoding)!),
