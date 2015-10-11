@@ -21,7 +21,7 @@
 import Foundation
 
 private let LOG_FILE_NAME = "MOONLog.txt"
-private let SHOULD_SAVE_LOG_TO_FILE = true
+private let SHOULD_SAVE_LOG_TO_FILE = false
 private let SHOULD_INCLUDE_TIME     = true
 private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
 
@@ -109,7 +109,7 @@ struct MOONLogger {
                 do {
                     try NSFileManager.defaultManager().removeItemAtPath(path)
                 } catch let error as NSError {
-                    print("Failed to remove the file \"\(path)\", with errror: \(error.localizedDescription)")
+                    print("Failed to remove the log file at \"\(path)\", with error: \(error.localizedDescription)")
                 }
             }
         }
