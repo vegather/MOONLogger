@@ -31,7 +31,7 @@ func MOONLog(filePath: String = __FILE__, functionName: String = __FUNCTION__, l
 }
 
 func MOONLog(message: String, filePath: String = __FILE__, functionName: String = __FUNCTION__, lineNumber: Int = __LINE__) {
-    dispatch_async(logQueue, { () -> Void in
+    dispatch_async(logQueue) {
         var printString = ""
 		
 		// This will happen no matter how this function is exited
@@ -82,7 +82,7 @@ func MOONLog(message: String, filePath: String = __FILE__, functionName: String 
         if SHOULD_SAVE_LOG_TO_FILE {
             MOONLogger.appendToLogFile(printString)
         }
-    })
+    }
 }
 
 
@@ -115,11 +115,11 @@ struct MOONLogger {
         }
     }
     
-    static func getLogFile(completionHandler: (logFile: NSData?) -> ()) {
+    static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String?) -> ()) {
         dispatch_async(logQueue) {
             let data = NSData(contentsOfFile: getFilePath())
             dispatch_async(dispatch_get_main_queue()) {
-                completionHandler(logFile: data)
+                completionHandler(logFile: data, mimeType: "text/txt")
             }
         }
     }
