@@ -8,13 +8,20 @@ line number, file, function, and the actual message, neatly organized into colum
 It also has on option to save the log file to a .txt file, and retrieve it later.
 
 It should be thread safe, as everything runs on a single serial queue. A side-effect of
-this is that if your app crashes, the last log statements before the crash won't have had
-time to be printed to the console yet. A workaround for this is to hit the ⧐ button
+this though, is that if your app crashes, the last log statements before the crash won't 
+have had time to be printed to the console yet. A workaround for this is to hit the 
+<img src="http://imgur.com/vPrVJC2.png" alt="Debug Run Button" style="width: 18px; height: 14px;"/>-button 
+a few times until you see the final log messages.
+
 
 
 ## Demo
 
-Testing
+- Show two log statements using the global functions MOONLog(), MOONLog("Message")
+- Show how to turn log saving, and time on and off
+- Show how to retrieve the log file
+- Show how to clear the log file
+- Show how to force save in applicationWillTerminate in case of termination
 
 ![Image](http://imgur.com/qluneiY.png)
 
