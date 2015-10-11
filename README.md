@@ -17,12 +17,6 @@ final log messages.
 
 ## Instructions
 
-- Show two log statements using the global functions MOONLog(), MOONLog("Message")
-- Show how to turn log saving, and time on and off
-- Show how to retrieve the log file
-- Show how to clear the log file
-- Show how to force save in applicationWillTerminate in case of termination
-
 MOON Logger exposes one global function: `func MOONLog(message: String = "")`. This 
 function optionally takes a string as an argument. This means that you can either call
 it with no arguments, like this `MOONLog()` to just print out the location of the call 
@@ -37,6 +31,43 @@ MOON Logger has two options available:
 (off by default).
 - `SHOULD_INCLUDE_TIME`: Which sets if the date and time should be included in the log 
 statements. Turning this off will improve performance (on by default).
+
+<br />
+
+To handle to log file, MOON Logger exposes a struct with three static functions:
+- `static func forceSave()`
+- `static func clearLog()`
+- `static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String?) -> ())`
+
+The first function, `forceSave()`, is useful if you need to ensure that the log file gets
+save immediately. A typical place for this would be in `applicationWillTerminate(...)`,
+like this:
+`func applicationWillTerminate(application: UIApplication) {
+	MOONLogger.forceSave()
+}`
+
+The second function, `clearLog()`, is to delete the log file. This is useful after the
+log file has somehow been collected, and you don't need it anymore.
+
+
+The third function, `getLogFile(...)` is to retrieve the log file. It has a 
+completionHandler closure that will contain both the data, and the MIME type of the data
+(currently this will be text/txt). Notice that both of these are optional though. This is
+because the file retrieval might fail (in the case it hasn't been created yet), and you
+should use optional binding to get the values (`if let ...`). A typical use case might
+look like this:
+`MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
+	if let logFile = logFile, mimeType = mimeType {
+		let mailController = MFMailComposeViewController()
+		mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
+	}
+}`
+
+<br />
+
+Below is a screenshot with example output of MOON Logger. The first two are from a simple
+`MOONLog()` call (without any arguments), and the rest are from a call with a message
+as an argument: `MOONLog("...")`.
 
 ![Image](http://imgur.com/qluneiY.png)
 
