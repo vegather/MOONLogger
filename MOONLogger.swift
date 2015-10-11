@@ -23,7 +23,7 @@ import Foundation
 private let LOG_FILE_NAME = "MOONLog.txt"
 private let SHOULD_SAVE_LOG_TO_FILE = true
 private let SHOULD_INCLUDE_TIME     = true
-private let logQueue = dispatch_queue_create("Log Queue", DISPATCH_QUEUE_SERIAL)
+private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
 
 // Enables a call like MOONLog() to simply print a new line
 func MOONLog(filePath: String = __FILE__, functionName: String = __FUNCTION__, lineNumber: Int = __LINE__) {
