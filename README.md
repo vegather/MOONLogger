@@ -56,14 +56,14 @@ completionHandler closure that will contain both the data, and the MIME type of 
 because the file retrieval might fail (in the case it hasn't been created yet), and you
 should use optional binding to get the values (`if let ...`). A typical use case might
 look like this:
-`
+```
 	MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
 		if let logFile = logFile, mimeType = mimeType {
 			let mailController = MFMailComposeViewController()
 			mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
 		}
 }
-`
+```
 
 <br />
 
