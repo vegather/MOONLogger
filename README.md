@@ -30,7 +30,7 @@ it with no arguments, like this `MOONLog()` to just print out the location of th
 like this `MOONLog("Logging from viewDidLoad")`, which will print out the location as
 well as the message.
 
------
+<br />
 
 MOON Logger has two options available:
 - `SHOULD_SAVE_LOG_TO_FILE`: Which sets if the log statements should be saved to a file
