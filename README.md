@@ -40,8 +40,8 @@ To handle the log file, MOON Logger exposes a struct with three static functions
 - `static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String?) -> ())`
 
 The first function, `forceSave()`, is useful if you need to ensure that the log file gets
-save immediately. A typical place for this would be in `applicationWillTerminate(...)`,
-like this:
+save immediately. A typical place for this would be just before the application gets 
+terminated. I.E. in `applicationWillTerminate(...)`, like this:
 ```
 func applicationWillTerminate(application: UIApplication) {
 	MOONLogger.forceSave()
