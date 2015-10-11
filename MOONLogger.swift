@@ -47,8 +47,8 @@ func MOONLog(message: String = "", filePath: String = __FILE__, functionName: St
                 tensOfASecondString += "0"
             }
 			
-			// Makes sure there are no more than 3 millisecond digits
-			tensOfASecondString = tensOfASecondString.substringToIndex(tensOfASecondString.startIndex.advancedBy(3))
+            // Makes sure there are no more than 3 millisecond digits
+            tensOfASecondString = tensOfASecondString.substringToIndex(tensOfASecondString.startIndex.advancedBy(3))
 			
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH.mm.ss"
@@ -57,8 +57,8 @@ func MOONLog(message: String = "", filePath: String = __FILE__, functionName: St
             printString += "\(dateString).\(tensOfASecondString)   "
         }
 		
-		// If this doesn't work, the defer statement will make sure printString gets printed anyway
-		var fileName = (filePath as NSString).lastPathComponent
+        // If this doesn't work, the defer statement will make sure printString gets printed anyway
+        var fileName = (filePath as NSString).lastPathComponent
         var functionNameToPrint = functionName
         
         if fileName.characters.count > 25 {
