@@ -42,9 +42,11 @@ To handle to log file, MOON Logger exposes a struct with three static functions:
 The first function, `forceSave()`, is useful if you need to ensure that the log file gets
 save immediately. A typical place for this would be in `applicationWillTerminate(...)`,
 like this:
-`func applicationWillTerminate(application: UIApplication) {
+```
+func applicationWillTerminate(application: UIApplication) {
 	MOONLogger.forceSave()
-}`
+}
+```
 
 The second function, `clearLog()`, is to delete the log file. This is useful after the
 log file has somehow been collected, and you don't need it anymore.
@@ -57,11 +59,11 @@ because the file retrieval might fail (in the case it hasn't been created yet), 
 should use optional binding to get the values (`if let ...`). A typical use case might
 look like this:
 ```
-	MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
-		if let logFile = logFile, mimeType = mimeType {
-			let mailController = MFMailComposeViewController()
-			mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
-		}
+MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
+	if let logFile = logFile, mimeType = mimeType {
+		let mailController = MFMailComposeViewController()
+		mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
+	}
 }
 ```
 
