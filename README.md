@@ -34,7 +34,7 @@ statements. Turning this off will improve performance (on by default).
 
 <br />
 
-To handle to log file, MOON Logger exposes a struct with three static functions:
+To handle the log file, MOON Logger exposes a struct with three static functions:
 - `static func forceSave()`
 - `static func clearLog()`
 - `static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String?) -> ())`
