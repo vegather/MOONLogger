@@ -61,8 +61,7 @@ look like this:
 ```
 MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
 	if let logFile = logFile, mimeType = mimeType {
-		let mailController = MFMailComposeViewController()
-		mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
+		...
 	}
 }
 ```
