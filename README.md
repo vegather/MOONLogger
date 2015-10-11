@@ -26,7 +26,7 @@ well as the message.
 
 <br />
 
-MOON Logger has two options available:
+MOON Logger has two options available, both of which are at the top of MOONLogger.swift:
 - `SHOULD_SAVE_LOG_TO_FILE`: Which sets if the log statements should be saved to a file
 (off by default).
 - `SHOULD_INCLUDE_TIME`: Which sets if the date and time should be included in the log 
@@ -56,12 +56,14 @@ completionHandler closure that will contain both the data, and the MIME type of 
 because the file retrieval might fail (in the case it hasn't been created yet), and you
 should use optional binding to get the values (`if let ...`). A typical use case might
 look like this:
-`MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
-	if let logFile = logFile, mimeType = mimeType {
-		let mailController = MFMailComposeViewController()
-		mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
-	}
-}`
+`
+	MOONLogger.getLogFile { (logFile: NSData?, mimeType: String?) -> () in
+		if let logFile = logFile, mimeType = mimeType {
+			let mailController = MFMailComposeViewController()
+			mailController.addAttachmentData(logFile, mimeType: mimeType, fileName: "Log.txt")
+		}
+}
+`
 
 <br />
 
