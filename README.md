@@ -74,6 +74,13 @@ as an argument: `MOONLog("...")`.
 
 ![Image](http://imgur.com/qluneiY.png)
 
+
+## Todo
+
+- Add support for different levels of logging (like `Information`, `Debug`, `Error`, 
+`Warning`, etc...)
+
+
 ## Contact
 
 - [@vegather on Twitter](http://www.twitter.com/vegather)
