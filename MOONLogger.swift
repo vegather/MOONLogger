@@ -21,115 +21,171 @@
 import Foundation
 
 private let LOG_FILE_NAME = "MOONLog.txt"
-private let SHOULD_SAVE_LOG_TO_FILE = false
-private let SHOULD_INCLUDE_TIME     = true
+private let SHOULD_INCLUDE_TIME = true
 private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
+private var logFile: UnsafeMutablePointer<FILE> = nil
+private var shouldSaveToLogFile = false
 
 
-func MOONLog(message: String = "", filePath: String = __FILE__, functionName: String = __FUNCTION__, lineNumber: Int = __LINE__) {
+/**
+ A log statement that lets you easily see which file, function, and line number a log statement came from.
+ 
+ - Parameter items: An optional list of items you want printed. Every item will be converted to a `String` like this: `"\(item)"`.
+ - Parameter separator: An optional separator string that will be inserted between each of the `items`.
+ - Parameter stream: The stream to write the `items` to. Primarily used for testing. Defaults to stdout, which is the same place the normal `print(...)` call prints to.
+
+ The `filePath`, `functionName`, and `lineNumber` arguments should be left as they are. They default to `__FILE__`, `__FUNCTION__`, and `__LINE__` respectively, which is how `MOONLog(...)` is able to do its magic.
+ */
+func MOONLog(
+    items       : Any...,
+    separator   : String = " ",
+    filePath    : String = __FILE__,
+    functionName: String = __FUNCTION__,
+    lineNumber  : Int    = __LINE__,
+    stream      : UnsafeMutablePointer<FILE> = stdout)
+{
     dispatch_async(logQueue) {
+        
         var printString = ""
 		
-        // This will happen no matter how this function is exited
-        defer { print(printString) }
-		
+        // Going with this ANSI C solution here because it's about 1.5x
+        // faster than the NSDateFormatter alternative.
         if SHOULD_INCLUDE_TIME {
-            let date = NSDate()
+            let bufferSize = 32
+            var buffer = [Int8](count: bufferSize, repeatedValue: 0)
+            var timeValue = time(nil)
+            let tmValue = localtime(&timeValue)
             
-            var milliseconds = date.timeIntervalSince1970 as Double
-            milliseconds -= floor(milliseconds)
-            let tensOfASecond = Int(milliseconds * 10000)
-            
-            // Adding extra "0"s to the milliseconds if necessary
-            var tensOfASecondString = "\(tensOfASecond)"
-            
-            while tensOfASecondString.characters.count < 3 {
-                tensOfASecondString += "0"
+            strftime(&buffer, bufferSize, "%Y-%m-%d %H.%M.%S", tmValue)
+            if let dateFormat = String(CString: buffer, encoding: NSUTF8StringEncoding) {
+                var timeForMilliseconds = timeval()
+                gettimeofday(&timeForMilliseconds, nil)
+                let timeSince1970 = NSDate().timeIntervalSince1970
+                let seconds = floor(timeSince1970)
+                let thousands = UInt(floor((timeSince1970 - seconds) * 1000.0))
+                let milliseconds = String(format: "%03u", arguments: [thousands])
+                printString = dateFormat + "." + milliseconds + "    "
             }
-			
-            // Makes sure there are no more than 3 millisecond digits
-            tensOfASecondString = tensOfASecondString.substringToIndex(tensOfASecondString.startIndex.advancedBy(3))
-			
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH.mm.ss"
-            let dateString = dateFormatter.stringFromDate(date)
-            
-            printString += "\(dateString).\(tensOfASecondString)   "
         }
 		
-        // If this doesn't work, the defer statement will make sure printString gets printed anyway
+        // Limit the fileName to 25 characters
         var fileName = (filePath as NSString).lastPathComponent
-        var functionNameToPrint = functionName
-        
         if fileName.characters.count > 25 {
             fileName = fileName.substringToIndex(fileName.startIndex.advancedBy(22)) + "..."
         }
         
+        // Limit the functionName to 40 characters
+        var functionNameToPrint = functionName
         if functionName.characters.count > 40 {
             functionNameToPrint = functionName.substringToIndex(functionName.startIndex.advancedBy(37)) + "..."
         }
         
+        // Construct the message to be printed
+        var message = ""
+        for (i, item) in items.enumerate() {
+            message += "\(item)"
+            if i < items.count-1 { message += separator }
+        }
+
         printString += String(format: "l:%-5d %-25s  %-40s  %@",
             lineNumber,
             COpaquePointer(fileName.cStringUsingEncoding(NSUTF8StringEncoding)!),
             COpaquePointer(functionNameToPrint.cStringUsingEncoding(NSUTF8StringEncoding)!),
             message)
         
-        if SHOULD_SAVE_LOG_TO_FILE {
-            MOONLogger.appendToLogFile(printString)
+        // Write to the specified stream (stdout by default)
+        MOONLogger.writeMessage(printString, toStream: stream)
+        
+        if shouldSaveToLogFile {
+            // Write to the logFile
+            MOONLogger.writeMessage(printString, toStream: logFile)
         }
     }
 }
 
 
-struct MOONLogger {
+public struct MOONLogger {
     
-    private static let privateSharedLogger = MOONLogger()
-    private let file: NSFileHandle?
-    
-    private init() {
-        file = NSFileHandle(forUpdatingAtPath: MOONLogger.getFilePath())
+    /**
+     Sets up the log file.
+     */
+    public static func initializeLogFile() {
+        shouldSaveToLogFile = true
+        if logFile == nil { logFile = fopen(getFilePath(), "a+") }
     }
     
-    static func forceSave() {
-        dispatch_async(logQueue) {
-            privateSharedLogger.file?.synchronizeFile()
-            privateSharedLogger.file?.closeFile()
+    
+    /**
+     Force writes everything written to the file thus far to be saved (by flushing the file), and then closing it. A good use case for this is in `applicationDidEnterBackground`, or `applicationWillTerminate` of your `AppDelegate`. Currently there's no way to recreate the log file other than relaunching the app (so that this file gets reloaded).
+     */
+    public static func forceSaveAndClose() {
+        // Not doing this on the logQueue so that we can save and close ASAP, because the app might shut down at any moment.
+        shouldSaveToLogFile = false
+        if logFile != nil {
+            fflush(logFile)
+            fclose(logFile)
+            logFile = nil
         }
     }
     
-    static func clearLog() {
-        dispatch_async(logQueue) {
-            let path = getFilePath()
-            if NSFileManager.defaultManager().fileExistsAtPath(path) {
-                do {
-                    try NSFileManager.defaultManager().removeItemAtPath(path)
-                } catch let error as NSError {
-                    print("Failed to remove the log file at \"\(path)\", with error: \(error.localizedDescription)")
-                }
+    
+    /**
+     This will wait until every pending write to the file is completed before clearing the file.
+     */
+    public static func clearLog() {
+        // Doing it asynchronously on the logQueue to make sure all the MOONLog(...)
+        // statements that were done before this call is finished before clearing it.
+        // That way you won't get any leftover junk in the file.
+        if logFile != nil {
+            dispatch_async(logQueue) {
+                // Open the file for reading & writing, and destroy any content that's in there.
+                logFile = freopen(getFilePath(), "w+", logFile)
             }
         }
     }
     
-    static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String?) -> ()) {
+    
+    /**
+     Waits until all pending `MOONLog(...)` calls are written to the file, and then returns the `logFile` data in a `completionHandler` on the main queue.
+     
+     - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/txt`). If there was some problem fetching the `logFile`, it will be nil.
+     */
+    public static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String) -> ()) {
+        guard logFile == nil else {
+            completionHandler(logFile: nil, mimeType: "")
+            return
+        }
+        
         dispatch_async(logQueue) {
-            let data = NSData(contentsOfFile: getFilePath())
+            rewind(logFile)
+            
+            let data = NSMutableData()
+            var c = fgetc(logFile)
+            while c != EOF {
+                data.appendBytes(&c, length: sizeof(Int8))
+                c = fgetc(logFile)
+            }
+            
             dispatch_async(dispatch_get_main_queue()) {
                 completionHandler(logFile: data, mimeType: "text/txt")
             }
         }
     }
     
-    private static func appendToLogFile(text: String) {
-        guard let textData = (text + "\n").dataUsingEncoding(NSUTF8StringEncoding) else { return }
-        
-        // Will most likely always be called from the MOONLog global function, which is already wrapped
-        // in a dispatch_async call, but better safe than sorry.
-        dispatch_async(logQueue) {
-            privateSharedLogger.file?.writeData(textData)
-        }
+    
+    // Do the printing using putc() nested in flockfile() and funlockfile() to
+    // ensure that MOONLog() and regular print() statements doesn't get interleaved.
+    private static func writeMessage(message: String, toStream outStream: UnsafeMutablePointer<FILE>) {
+            var stdoutGenerator =  message.unicodeScalars.generate()
+            flockfile(outStream)
+            while let char = stdoutGenerator.next() {
+                putc(Int32(char.value), outStream)
+            }
+            putc(10, outStream) // NewLine
+            funlockfile(outStream)
     }
     
+    // Returns the path to a file named by the constant LOG_FILE_NAME in the users documents directory.
     private static func getFilePath() -> String {
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
             NSSearchPathDirectory.DocumentDirectory,
