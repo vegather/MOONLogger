@@ -24,7 +24,6 @@ private let LOG_FILE_NAME = "MOONLog.txt"
 private let SHOULD_INCLUDE_TIME = true
 private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
 private var logFile: UnsafeMutablePointer<FILE> = nil
-private var shouldSaveToLogFile = false
 
 
 /**
@@ -96,7 +95,7 @@ func MOONLog(
         // Write to the specified stream (stdout by default)
         MOONLogger.writeMessage(printString, toStream: stream)
         
-        if shouldSaveToLogFile {
+        if logFile != nil {
             // Write to the logFile
             MOONLogger.writeMessage(printString, toStream: logFile)
         }
@@ -107,86 +106,124 @@ func MOONLog(
 public struct MOONLogger {
     
     /**
-     Sets up the log file.
+     Sets up the log file. If there already exists a log file, future `MOONLog(...)` calls will simply append to that file. If no file exists, a new one is created.
+     
+     This should be called as soon as you want to store logs in a log file. Typically you would call this at the beginning of `application(_: didFinishLaunchingWithOptions:)` in your `AppDelegate`.
+     
+     - seealso: `application(_: didFinishLaunchingWithOptions:)`
      */
     public static func initializeLogFile() {
-        shouldSaveToLogFile = true
-        if logFile == nil { logFile = fopen(getFilePath(), "a+") }
+        if logFile == nil { logFile = fopen(getLogFilePath(), "a+") }
     }
     
     
     /**
-     Force writes everything written to the file thus far to be saved (by flushing the file), and then closing it. A good use case for this is in `applicationDidEnterBackground`, or `applicationWillTerminate` of your `AppDelegate`. Currently there's no way to recreate the log file other than relaunching the app (so that this file gets reloaded).
+     Force writes everything written to the file thus far to be saved (by flushing the file), and then closing it. 
+     
+     A good use case for this is in `applicationWillTerminate` of your `AppDelegate`. When you want to recreate the log file, simply call `MOONLogger.initializeLogFile()`.
+     
+     - seealso: `MOONLogger.initializeLogFile()`
      */
     public static func forceSaveAndClose() {
         // Not doing this on the logQueue so that we can save and close ASAP, because the app might shut down at any moment.
-        shouldSaveToLogFile = false
         if logFile != nil {
+            flockfile(logFile)
             fflush(logFile)
             fclose(logFile)
+            funlockfile(logFile)
             logFile = nil
         }
     }
     
     
     /**
-     This will wait until every pending write to the file is completed before clearing the file.
+     If the file is open (from calling `initializeLogFile()`), this will wait until every pending write to the file is completed before clearing the file.
      */
     public static func clearLog() {
-        // Doing it asynchronously on the logQueue to make sure all the MOONLog(...)
-        // statements that were done before this call is finished before clearing it.
-        // That way you won't get any leftover junk in the file.
+        // If the file is open, use freopen to close it and the reopen it with a new mode (w+)
         if logFile != nil {
+            // Doing it asynchronously on the logQueue to make sure all the MOONLog(...)
+            // statements that were done before this call is finished before clearing it.
+            // That way you won't get any leftover junk in the file.
             dispatch_async(logQueue) {
                 // Open the file for reading & writing, and destroy any content that's in there.
-                logFile = freopen(getFilePath(), "w+", logFile)
+                logFile = freopen(getLogFilePath(), "w+", logFile)
+                
             }
+        }
+        // If the file is closed, just delete the file at the file path. It will get recreated in 
+        // getLogFile(...) or through initializeLogFile() at some later point
+        else {
+            remove(getLogFilePath())
         }
     }
     
     
     /**
-     Waits until all pending `MOONLog(...)` calls are written to the file, and then returns the `logFile` data in a `completionHandler` on the main queue.
+     If you have initialized a log file (see `initializeLogFile()`), this will wait until all pending `MOONLog(...)` calls are written to the file, and then returns the `logFile` data in a `completionHandler` on the main queue. If you have not initialized the log file, or closed it (see `forceSaveAndClose()`), the log file will get returned as soon as possible in the completion handler on the main thread.
      
-     - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/txt`). If there was some problem fetching the `logFile`, it will be nil.
+     - seealso: `initializeLogFile()`
+     
+     `forceSaveAndClose()`
+     
+     - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/txt`). If there were some problem fetching the `logFile`, it will be nil.
      */
     public static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String) -> ()) {
-        guard logFile == nil else {
-            completionHandler(logFile: nil, mimeType: "")
-            return
-        }
-        
-        dispatch_async(logQueue) {
-            rewind(logFile)
-            
-            let data = NSMutableData()
-            var c = fgetc(logFile)
-            while c != EOF {
-                data.appendBytes(&c, length: sizeof(Int8))
-                c = fgetc(logFile)
+        if logFile == nil {
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                let tempLogFile = fopen(getLogFilePath(), "r")
+                if tempLogFile == nil {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        completionHandler(logFile: nil, mimeType: "")
+                    }
+                    return
+                }
+                let data = fetchTheFile(tempLogFile)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(logFile: data, mimeType: "text/txt")
+                }
             }
-            
-            dispatch_async(dispatch_get_main_queue()) {
-                completionHandler(logFile: data, mimeType: "text/txt")
+        } else {
+            dispatch_async(logQueue) {
+                let data = fetchTheFile(logFile)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(logFile: data, mimeType: "text/txt")
+                }
             }
         }
     }
     
     
-    // Do the printing using putc() nested in flockfile() and funlockfile() to
-    // ensure that MOONLog() and regular print() statements doesn't get interleaved.
+    /// *Synchronously* gets the data that's in the logFile, and returns it as an NSData.
+    private static func fetchTheFile(file: UnsafeMutablePointer<FILE>) -> NSData {
+        flockfile(file)
+        rewind(file)
+        
+        let data = NSMutableData()
+        var c = fgetc(file)
+        while c != EOF {
+            data.appendBytes(&c, length: sizeof(Int8))
+            c = fgetc(file)
+        }
+        funlockfile(file)
+        
+        return data
+    }
+    
+    /// Do the printing using `putc()` nested in `flockfile()` and `funlockfile()` to
+    /// ensure that `MOONLog()` and regular `print()` statements doesn't get interleaved.
     private static func writeMessage(message: String, toStream outStream: UnsafeMutablePointer<FILE>) {
-            var stdoutGenerator =  message.unicodeScalars.generate()
-            flockfile(outStream)
-            while let char = stdoutGenerator.next() {
-                putc(Int32(char.value), outStream)
-            }
-            putc(10, outStream) // NewLine
-            funlockfile(outStream)
+        var stdoutGenerator =  message.unicodeScalars.generate()
+        flockfile(outStream)
+        while let char = stdoutGenerator.next() {
+            putc(Int32(char.value), outStream)
+        }
+        putc(10, outStream) // NewLine
+        funlockfile(outStream)
     }
     
     // Returns the path to a file named by the constant LOG_FILE_NAME in the users documents directory.
-    private static func getFilePath() -> String {
+    private static func getLogFilePath() -> String {
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
             NSSearchPathDirectory.DocumentDirectory,
             NSSearchPathDomainMask.UserDomainMask,
