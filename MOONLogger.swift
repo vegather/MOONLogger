@@ -31,9 +31,7 @@ func MOONLog(message: String = "", filePath: String = __FILE__, functionName: St
         var printString = ""
 		
         // This will happen no matter how this function is exited
-        defer {
-            dispatch_async(dispatch_get_main_queue, 
-            print(printString) }
+        defer { print(printString) }
 		
         if SHOULD_INCLUDE_TIME {
             let date = NSDate()
