@@ -1,0 +1,413 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9A1109B51C59443D00EEB01E /* ViewFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1109B41C59443D00EEB01E /* ViewFileViewController.swift */; };
+		9AB8DDDA1C57D283000AF114 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDD91C57D283000AF114 /* AppDelegate.swift */; };
+		9AB8DDDC1C57D283000AF114 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDDB1C57D283000AF114 /* ViewController.swift */; };
+		9AB8DDDF1C57D283000AF114 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AB8DDDD1C57D283000AF114 /* Main.storyboard */; };
+		9AB8DDE11C57D283000AF114 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AB8DDE01C57D283000AF114 /* Assets.xcassets */; };
+		9AB8DDE41C57D283000AF114 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AB8DDE21C57D283000AF114 /* LaunchScreen.storyboard */; };
+		9AB8DDEF1C57D283000AF114 /* MOONLoggerTesterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDEE1C57D283000AF114 /* MOONLoggerTesterTests.swift */; };
+		9AB8DDFA1C57D2E3000AF114 /* MOONLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDF91C57D2E3000AF114 /* MOONLogger.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9AB8DDEB1C57D283000AF114 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9AB8DDCE1C57D283000AF114 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9AB8DDD51C57D283000AF114;
+			remoteInfo = MOONLoggerTester;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9A1109B41C59443D00EEB01E /* ViewFileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewFileViewController.swift; sourceTree = "<group>"; };
+		9AB8DDD61C57D283000AF114 /* MOONLoggerTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MOONLoggerTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9AB8DDD91C57D283000AF114 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9AB8DDDB1C57D283000AF114 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9AB8DDDE1C57D283000AF114 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9AB8DDE01C57D283000AF114 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9AB8DDE31C57D283000AF114 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9AB8DDE51C57D283000AF114 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9AB8DDEA1C57D283000AF114 /* MOONLoggerTesterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MOONLoggerTesterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9AB8DDEE1C57D283000AF114 /* MOONLoggerTesterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOONLoggerTesterTests.swift; sourceTree = "<group>"; };
+		9AB8DDF01C57D283000AF114 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9AB8DDF91C57D2E3000AF114 /* MOONLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MOONLogger.swift; path = ../../MOONLogger.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9AB8DDD31C57D283000AF114 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9AB8DDE71C57D283000AF114 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9AB8DDCD1C57D283000AF114 = {
+			isa = PBXGroup;
+			children = (
+				9AB8DDD81C57D283000AF114 /* MOONLoggerTester */,
+				9AB8DDED1C57D283000AF114 /* MOONLoggerTesterTests */,
+				9AB8DDD71C57D283000AF114 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9AB8DDD71C57D283000AF114 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9AB8DDD61C57D283000AF114 /* MOONLoggerTester.app */,
+				9AB8DDEA1C57D283000AF114 /* MOONLoggerTesterTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9AB8DDD81C57D283000AF114 /* MOONLoggerTester */ = {
+			isa = PBXGroup;
+			children = (
+				9AB8DDD91C57D283000AF114 /* AppDelegate.swift */,
+				9A1109B41C59443D00EEB01E /* ViewFileViewController.swift */,
+				9AB8DDDB1C57D283000AF114 /* ViewController.swift */,
+				9AB8DDF91C57D2E3000AF114 /* MOONLogger.swift */,
+				9AB8DDDD1C57D283000AF114 /* Main.storyboard */,
+				9AB8DDE01C57D283000AF114 /* Assets.xcassets */,
+				9AB8DDE21C57D283000AF114 /* LaunchScreen.storyboard */,
+				9AB8DDE51C57D283000AF114 /* Info.plist */,
+			);
+			path = MOONLoggerTester;
+			sourceTree = "<group>";
+		};
+		9AB8DDED1C57D283000AF114 /* MOONLoggerTesterTests */ = {
+			isa = PBXGroup;
+			children = (
+				9AB8DDEE1C57D283000AF114 /* MOONLoggerTesterTests.swift */,
+				9AB8DDF01C57D283000AF114 /* Info.plist */,
+			);
+			path = MOONLoggerTesterTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9AB8DDD51C57D283000AF114 /* MOONLoggerTester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9AB8DDF31C57D283000AF114 /* Build configuration list for PBXNativeTarget "MOONLoggerTester" */;
+			buildPhases = (
+				9AB8DDD21C57D283000AF114 /* Sources */,
+				9AB8DDD31C57D283000AF114 /* Frameworks */,
+				9AB8DDD41C57D283000AF114 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MOONLoggerTester;
+			productName = MOONLoggerTester;
+			productReference = 9AB8DDD61C57D283000AF114 /* MOONLoggerTester.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9AB8DDE91C57D283000AF114 /* MOONLoggerTesterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9AB8DDF61C57D283000AF114 /* Build configuration list for PBXNativeTarget "MOONLoggerTesterTests" */;
+			buildPhases = (
+				9AB8DDE61C57D283000AF114 /* Sources */,
+				9AB8DDE71C57D283000AF114 /* Frameworks */,
+				9AB8DDE81C57D283000AF114 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9AB8DDEC1C57D283000AF114 /* PBXTargetDependency */,
+			);
+			name = MOONLoggerTesterTests;
+			productName = MOONLoggerTesterTests;
+			productReference = 9AB8DDEA1C57D283000AF114 /* MOONLoggerTesterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9AB8DDCE1C57D283000AF114 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "MOON Wearables";
+				TargetAttributes = {
+					9AB8DDD51C57D283000AF114 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					9AB8DDE91C57D283000AF114 = {
+						CreatedOnToolsVersion = 7.2;
+						TestTargetID = 9AB8DDD51C57D283000AF114;
+					};
+				};
+			};
+			buildConfigurationList = 9AB8DDD11C57D283000AF114 /* Build configuration list for PBXProject "MOONLoggerTester" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9AB8DDCD1C57D283000AF114;
+			productRefGroup = 9AB8DDD71C57D283000AF114 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9AB8DDD51C57D283000AF114 /* MOONLoggerTester */,
+				9AB8DDE91C57D283000AF114 /* MOONLoggerTesterTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9AB8DDD41C57D283000AF114 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AB8DDE41C57D283000AF114 /* LaunchScreen.storyboard in Resources */,
+				9AB8DDE11C57D283000AF114 /* Assets.xcassets in Resources */,
+				9AB8DDDF1C57D283000AF114 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9AB8DDE81C57D283000AF114 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9AB8DDD21C57D283000AF114 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AB8DDDC1C57D283000AF114 /* ViewController.swift in Sources */,
+				9A1109B51C59443D00EEB01E /* ViewFileViewController.swift in Sources */,
+				9AB8DDFA1C57D2E3000AF114 /* MOONLogger.swift in Sources */,
+				9AB8DDDA1C57D283000AF114 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9AB8DDE61C57D283000AF114 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AB8DDEF1C57D283000AF114 /* MOONLoggerTesterTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9AB8DDEC1C57D283000AF114 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9AB8DDD51C57D283000AF114 /* MOONLoggerTester */;
+			targetProxy = 9AB8DDEB1C57D283000AF114 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9AB8DDDD1C57D283000AF114 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9AB8DDDE1C57D283000AF114 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		9AB8DDE21C57D283000AF114 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9AB8DDE31C57D283000AF114 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9AB8DDF11C57D283000AF114 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9AB8DDF21C57D283000AF114 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9AB8DDF41C57D283000AF114 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = MOONLoggerTester/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moonwearables.MOONLoggerTester;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9AB8DDF51C57D283000AF114 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = MOONLoggerTester/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moonwearables.MOONLoggerTester;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		9AB8DDF71C57D283000AF114 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = MOONLoggerTesterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moonwearables.MOONLoggerTesterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MOONLoggerTester.app/MOONLoggerTester";
+			};
+			name = Debug;
+		};
+		9AB8DDF81C57D283000AF114 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = MOONLoggerTesterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moonwearables.MOONLoggerTesterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MOONLoggerTester.app/MOONLoggerTester";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9AB8DDD11C57D283000AF114 /* Build configuration list for PBXProject "MOONLoggerTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AB8DDF11C57D283000AF114 /* Debug */,
+				9AB8DDF21C57D283000AF114 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9AB8DDF31C57D283000AF114 /* Build configuration list for PBXNativeTarget "MOONLoggerTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AB8DDF41C57D283000AF114 /* Debug */,
+				9AB8DDF51C57D283000AF114 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9AB8DDF61C57D283000AF114 /* Build configuration list for PBXNativeTarget "MOONLoggerTesterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AB8DDF71C57D283000AF114 /* Debug */,
+				9AB8DDF81C57D283000AF114 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9AB8DDCE1C57D283000AF114 /* Project object */;
+}
