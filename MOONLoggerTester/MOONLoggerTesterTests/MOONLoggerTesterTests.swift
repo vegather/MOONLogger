@@ -11,26 +11,63 @@ import XCTest
 
 class MOONLoggerTesterTests: XCTestCase {
     
+    // -------------------------------
+    // MARK: Setup
+    // -------------------------------
+    
+    var testFile: UnsafeMutablePointer<FILE>!
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        let path = NSBundle(forClass: MOONLoggerTesterTests.classForCoder()).resourcePath!
+        testFile = fopen(path + "/testFile.txt", "w+")
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+        fclose(testFile)
+        testFile = nil
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+    
+    // -------------------------------
+    // MARK: Testing
+    // -------------------------------
+    
+    func testBasicWriting() {
+        let messageToPrint = "Hello World"
+        MOONLog(messageToPrint, stream: testFile)
+        
+        NSThread.sleepForTimeInterval(3.0)
+        
+        if let text = whatsInTheTestFile() {
+            XCTAssert(text.hasSuffix(messageToPrint + "\n"), "text: \(text)")
+        } else {
+            XCTFail("Could not fetch text from the testFile")
         }
     }
     
+    
+    
+    
+    
+    // -------------------------------
+    // MARK: Private Helpers
+    // -------------------------------
+    
+    private func whatsInTheTestFile() -> String? {
+        flockfile(testFile)
+        rewind(testFile)
+        
+        let data = NSMutableData()
+        var c = fgetc(testFile)
+        while c != EOF {
+            data.appendBytes(&c, length: sizeof(Int8))
+            c = fgetc(testFile)
+        }
+        funlockfile(testFile)
+        
+        return String(data: data, encoding: NSUTF8StringEncoding)
+    }
 }

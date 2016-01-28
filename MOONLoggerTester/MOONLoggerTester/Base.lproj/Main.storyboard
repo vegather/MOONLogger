@@ -6,7 +6,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--MOON Logger-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="MOONLoggerTester" customModuleProvider="target" sceneMemberID="viewController">
@@ -77,16 +77,16 @@
                             <constraint firstItem="8bt-W8-JnU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zQi-kV-sMb"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="L6l-PM-cmn"/>
+                    <navigationItem key="navigationItem" title="MOON Logger" id="L6l-PM-cmn"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1365" y="1176"/>
         </scene>
-        <!--View File View Controller-->
+        <!--View Log File-->
         <scene sceneID="r1X-d8-IGg">
             <objects>
-                <viewController id="y39-gN-BO2" customClass="ViewFileViewController" customModule="MOONLoggerTester" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="View Log File" id="y39-gN-BO2" customClass="ViewFileViewController" customModule="MOONLoggerTester" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UkJ-CG-7y2"/>
                         <viewControllerLayoutGuide type="bottom" id="VGZ-z7-sWs"/>

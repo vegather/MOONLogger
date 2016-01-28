@@ -11,24 +11,8 @@ import MessageUI
 
 class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-//        MOONLog("Hello, World")
-//        MOONLog("Hello", "World")
-//        MOONLog(1, 2, 3, 4, 5, 6, 7, 8, 9)
-//        MOONLog("My number is:", 2)
-//        MOONLog("I have \(5) apples")
-//        MOONLog("I have %d apples", 5)
-//        MOONLog("Users", "Vegard", "Documents", "sometext.txt", separator: "/")
-//        MOONLog()
-        
-        
-    }
-    
     @IBAction func sendEmailButtonTapped() {
         sendEmail()
-        // test
         print("sendEmailButtonTapped")
     }
     
@@ -48,8 +32,8 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
     }
     
     @IBAction func writeDataButtonTapped() {
-        for i in 0..<10 {
-            MOONLog("MAIN", i)
+        for i in 0..<1000 {
+            MOONLog("MAIN:", i)
         }
     }
     
@@ -69,11 +53,9 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
             
             MOONLogger.getLogFile { logFile, mimeType in
                 guard let logFile = logFile else {
-                    print("Could not get the sleep data file")
+                    self.presentAlertWithTitle("Failed", message: "Could not get the log data file")
                     return
                 }
-                
-                print("SIZE: \(logFile.length)")
                 
                 let formattedDateTime = formatter.stringFromDate(NSDate())
                 
@@ -124,6 +106,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         MOONLogger.getLogFile() {logFile, _ in
+            print(logFile)
             guard let destination = segue.destinationViewController as? ViewFileViewController else { return }
             guard let logFile = logFile else { return }
             guard let text = String(data: logFile, encoding: NSUTF8StringEncoding) else { return }
