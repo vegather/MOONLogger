@@ -43,7 +43,7 @@ override func viewDidLoad() {
 ```
 Don't worry if your file name or method name is too long. It will simply be truncated to fit neatly within the columns like this `thisIsAVeryLongMethodNameThatW...`. If you for some reason want to change the default width (like if you have a huge or tiny monitor), this can be done by changing the `FileNameWidth` and `MethodNameWidth` found in the `Constants` struct at the top of `MOONLogger.swift`. They are 25 and 40 respectively by default.
 
-The `Constants` struct also has two other constants (`LogFileName` and `ShouldIncludeTime`) which you can change to your liking. Setting `ShouldIncludeTime` to false will give you a performance increase of about 25%, but you will of course not be able to tell when the log happened. This is true both for the standard output to console, as well as for writing to the log file. 
+The `Constants` struct also has two other constants (`LogFileName` and `ShouldIncludeTime`) which you can change to your liking. Setting `ShouldIncludeTime` to false will give you a performance increase of about 25%, but you will of course not be able to tell when the log happened. This is true both for the standard output to console, as well as for writing to the log file.
 
 </br>
 
