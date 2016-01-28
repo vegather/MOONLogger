@@ -20,12 +20,16 @@
 
 import Foundation
 
-private let LOG_FILE_NAME = "MOONLog.txt"
-private let SHOULD_INCLUDE_TIME = true
+private struct Constants {
+    static let LogFileName       = "MOONLog.txt"
+    static let ShouldIncludeTime = true
+    static let FileNameWidth     = 25
+    static let MethodNameWidth   = 40
+}
+
 private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
 private var logFile: UnsafeMutablePointer<FILE> = nil
-private let FILE_NAME_WIDTH = 25
-private let METHOD_NAME_WIDTH = 40
+
 
 
 /**
@@ -51,7 +55,7 @@ func MOONLog(
 		
         // Going with this ANSI C solution here because it's about 1.5x
         // faster than the NSDateFormatter alternative.
-        if SHOULD_INCLUDE_TIME {
+        if Constants.ShouldIncludeTime {
             let bufferSize = 32
             var buffer = [Int8](count: bufferSize, repeatedValue: 0)
             var timeValue = time(nil)
@@ -71,14 +75,14 @@ func MOONLog(
 		
         // Limit the fileName to 25 characters
         var fileName = (filePath as NSString).lastPathComponent
-        if fileName.characters.count > FILE_NAME_WIDTH {
-            fileName = fileName.substringToIndex(fileName.startIndex.advancedBy(FILE_NAME_WIDTH - 3)) + "..."
+        if fileName.characters.count > Constants.FileNameWidth {
+            fileName = fileName.substringToIndex(fileName.startIndex.advancedBy(Constants.FileNameWidth - 3)) + "..."
         }
         
         // Limit the functionName to 40 characters
         var functionNameToPrint = functionName
-        if functionName.characters.count > METHOD_NAME_WIDTH {
-            functionNameToPrint = functionName.substringToIndex(functionName.startIndex.advancedBy(METHOD_NAME_WIDTH - 3)) + "..."
+        if functionName.characters.count > Constants.MethodNameWidth {
+            functionNameToPrint = functionName.substringToIndex(functionName.startIndex.advancedBy(Constants.MethodNameWidth - 3)) + "..."
         }
         
         // Construct the message to be printed
@@ -88,7 +92,7 @@ func MOONLog(
             if i < items.count-1 { message += separator }
         }
 
-        printString += String(format: "l:%-5d %-\(FILE_NAME_WIDTH)s  %-\(METHOD_NAME_WIDTH)s  %@",
+        printString += String(format: "l:%-5d %-\(Constants.FileNameWidth)s  %-\(Constants.MethodNameWidth)s  %@",
             lineNumber,
             COpaquePointer(fileName.cStringUsingEncoding(NSUTF8StringEncoding)!),
             COpaquePointer(functionNameToPrint.cStringUsingEncoding(NSUTF8StringEncoding)!),
@@ -231,7 +235,7 @@ public struct MOONLogger {
             NSSearchPathDomainMask.UserDomainMask,
             true)[0]
         
-        return (documentsDirectory as NSString).stringByAppendingPathComponent(LOG_FILE_NAME)
+        return (documentsDirectory as NSString).stringByAppendingPathComponent(Constants.LogFileName)
     }
 }
 
