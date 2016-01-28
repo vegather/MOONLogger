@@ -49,7 +49,7 @@ To handle the log file, MOON Logger exposes a struct called `MOONLogger` which h
 - `static func clearLog()`
 - `static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String) -> ())`
 
-#### `MOONLogger.initializeLogFile()`
+###### `MOONLogger.initializeLogFile()`
 Call this function whenever you want your future `MOONLog(...)` calls to be saved to a file. If you want all calls to be saved to a file, you can call `initializeLogFile()` as soon as your application finishes launching, like this:
 ```
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -59,7 +59,7 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
 ```
 If a file already exists, future calls to `MOONLog(...)` will simply append to that file. If the file is already open, calling this function does nothing.
 
-#### `MOONLogger.forceSaveAndClose()`
+###### `MOONLogger.forceSaveAndClose()`
 This function is used when you don't want any future `MOONLog(...)` calls to be written to a file, or your app is about to quit and you want to make sure everything is saved properly. A typical place for this would be just before the application gets terminated in `applicationWillTerminate(...)`, like this:
 ```
 func applicationWillTerminate(application: UIApplication) {
@@ -68,10 +68,10 @@ func applicationWillTerminate(application: UIApplication) {
 ```
 If the file is already closed (either by already having calling this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
 
-#### `MOONLogger.clearLog()`
+###### `MOONLogger.clearLog()`
 This function will delete everything written to the log file thus far. This is useful after the log file has somehow been collected, and you don't need it anymore. It doesn't matter if the file is open or closed while calling this. After the call, everything will be the same, except the file will be cleared.
 
-#### `MOONLogger.getLogFile(...)`
+###### `MOONLogger.getLogFile(...)`
 The final function is used to retrieve the log file. It takes a `completionHandler` that will contain both the `logFile` as an `NSData?`, and the `mimeType` of the data (currently this will be text/txt) as a `String`. If you have just made a lot of calls to `MOONLog(...)`, it might take a while before the `completionHandler` is called as it waits for all the logs to be written to the log file. Whenever it does get called, it will be called on the main thread. The `logFile` argument of the `completionHandler` is an optional and will be `nil` if there was some problem retrieving the file (like if the file has not yet been created). You should use optional binding (`if let ...`) to get the actual data. A typical use case might, look like this:
 ```
 MOONLogger.getLogFile() { logFile: NSData?, mimeType: String in
