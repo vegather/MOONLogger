@@ -24,6 +24,8 @@ private let LOG_FILE_NAME = "MOONLog.txt"
 private let SHOULD_INCLUDE_TIME = true
 private let logQueue = dispatch_queue_create("com.moonLogger.logQueue", DISPATCH_QUEUE_SERIAL)
 private var logFile: UnsafeMutablePointer<FILE> = nil
+private let FILE_NAME_WIDTH = 25
+private let METHOD_NAME_WIDTH = 40
 
 
 /**
@@ -69,14 +71,14 @@ func MOONLog(
 		
         // Limit the fileName to 25 characters
         var fileName = (filePath as NSString).lastPathComponent
-        if fileName.characters.count > 25 {
-            fileName = fileName.substringToIndex(fileName.startIndex.advancedBy(22)) + "..."
+        if fileName.characters.count > FILE_NAME_WIDTH {
+            fileName = fileName.substringToIndex(fileName.startIndex.advancedBy(FILE_NAME_WIDTH - 3)) + "..."
         }
         
         // Limit the functionName to 40 characters
         var functionNameToPrint = functionName
-        if functionName.characters.count > 40 {
-            functionNameToPrint = functionName.substringToIndex(functionName.startIndex.advancedBy(37)) + "..."
+        if functionName.characters.count > METHOD_NAME_WIDTH {
+            functionNameToPrint = functionName.substringToIndex(functionName.startIndex.advancedBy(METHOD_NAME_WIDTH - 3)) + "..."
         }
         
         // Construct the message to be printed
@@ -86,7 +88,7 @@ func MOONLog(
             if i < items.count-1 { message += separator }
         }
 
-        printString += String(format: "l:%-5d %-25s  %-40s  %@",
+        printString += String(format: "l:%-5d %-\(FILE_NAME_WIDTH)s  %-\(METHOD_NAME_WIDTH)s  %@",
             lineNumber,
             COpaquePointer(fileName.cStringUsingEncoding(NSUTF8StringEncoding)!),
             COpaquePointer(functionNameToPrint.cStringUsingEncoding(NSUTF8StringEncoding)!),
