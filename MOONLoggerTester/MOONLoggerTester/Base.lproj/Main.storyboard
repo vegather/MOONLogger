@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DtJ-Fn-aYf">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10089" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DtJ-Fn-aYf">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10072.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -19,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8bt-W8-JnU">
-                                <rect key="frame" x="264" y="285" width="73" height="30"/>
-                                <state key="normal" title="Email Data"/>
+                                <rect key="frame" x="270" y="285" width="61" height="30"/>
+                                <state key="normal" title="View File"/>
                                 <connections>
-                                    <action selector="sendEmailButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zto-Xc-Ks4"/>
+                                    <segue destination="y39-gN-BO2" kind="show" id="7Xa-XZ-0ib"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aqs-gV-Qx3">
@@ -53,18 +53,9 @@
                                     <action selector="forceSaveAndCloseButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="xvU-V8-Sas"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0g-ug-V6m">
-                                <rect key="frame" x="270" y="323" width="61" height="30"/>
-                                <state key="normal" title="View File"/>
-                                <connections>
-                                    <segue destination="y39-gN-BO2" kind="show" id="Lme-dz-ROG"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="p0g-ug-V6m" firstAttribute="top" secondItem="8bt-W8-JnU" secondAttribute="bottom" constant="8" id="0VN-dC-3dU"/>
-                            <constraint firstItem="p0g-ug-V6m" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="AFX-2e-whD"/>
                             <constraint firstItem="aqs-gV-Qx3" firstAttribute="top" secondItem="BFL-9a-e4i" secondAttribute="bottom" constant="8" id="MLX-jA-Po8"/>
                             <constraint firstItem="8bt-W8-JnU" firstAttribute="top" secondItem="aqs-gV-Qx3" secondAttribute="bottom" constant="8" id="U6M-Oi-R21"/>
                             <constraint firstItem="BFL-9a-e4i" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ceX-Ou-MCK"/>

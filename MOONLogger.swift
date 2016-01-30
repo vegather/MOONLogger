@@ -130,7 +130,7 @@ public struct MOONLogger {
      
      - seealso: `MOONLogger.initializeLogFile()`
      */
-    public static func forceSaveAndClose() {
+    public static func forceSaveAndCloseLogFile() {
         // Not doing this on the logQueue so that we can save and close ASAP, because the app might shut down at any moment.
         if logFile != nil {
             flockfile(logFile)
@@ -145,7 +145,7 @@ public struct MOONLogger {
     /**
      If the file is open (from calling `initializeLogFile()`), this will wait until every pending write to the file is completed before clearing the file.
      */
-    public static func clearLog() {
+    public static func clearLogFile() {
         // If the file is open, use freopen to close it and the reopen it with a new mode (w+)
         if logFile != nil {
             // Doing it asynchronously on the logQueue to make sure all the MOONLog(...)
