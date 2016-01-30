@@ -51,8 +51,8 @@ The `Constants` struct also has two other constants (`LogFileName` and `ShouldIn
 
 To handle the log file, MOON Logger exposes a struct called `MOONLogger` which has four static functions:
 - `static func initializeLogFile()`
-- `static func forceSaveAndClose()`
-- `static func clearLog()`
+- `static func forceSaveAndCloseLogFile()`
+- `static func clearLogFile()`
 - `static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String) -> ())`
 
 </br>
@@ -67,17 +67,17 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
 If a file already exists, future calls to `MOONLog(...)` will simply append to that file. If the file is already open, calling this function does nothing.
 
 </br>
-##### `MOONLogger.forceSaveAndClose()`
+##### `MOONLogger.forceSaveAndCloseLogFile()`
 This function is used when you don't want any future `MOONLog(...)` calls to be written to a file, or your app is about to quit and you want to make sure everything is saved properly. A typical place for this would be just before the application gets terminated in `applicationWillTerminate(...)`, like this:
 ```
 func applicationWillTerminate(application: UIApplication) {
-	MOONLogger.forceSaveAndClose()
+	MOONLogger.forceSaveAndCloseLogFile()
 }
 ```
 If the file is already closed (either by already having called this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
 
 </br>
-##### `MOONLogger.clearLog()`
+##### `MOONLogger.clearLogFile()`
 This function will delete everything written to the log file thus far. This is useful after the log file has somehow been collected, and you don't need it anymore. It doesn't matter if the file is open or closed while calling this. After the call, everything will be the same, except the file will be cleared.
 
 </br>
