@@ -32,14 +32,14 @@ override func viewDidLoad() {
 ```
 
 ```
-2016-01-28 14.48.22.077    l:17    ViewController.swift       viewDidLoad()              
-2016-01-28 14.48.22.086    l:18    ViewController.swift       viewDidLoad()              Hello, World
-2016-01-28 14.48.22.087    l:19    ViewController.swift       viewDidLoad()              Hello World
-2016-01-28 14.48.22.087    l:20    ViewController.swift       viewDidLoad()              1 2 3 4 5 6 7 8 9
-2016-01-28 14.48.22.087    l:21    ViewController.swift       viewDidLoad()              My number is: 2
-2016-01-28 14.48.22.087    l:22    ViewController.swift       viewDidLoad()              I have 5 apples
-2016-01-28 14.48.22.088    l:23    ViewController.swift       viewDidLoad()              192.168.0.1
-2016-01-28 14.48.22.088    l:24    ViewController.swift       viewDidLoad()              Users/Vegard/Documents/sometext.txt
+2016-01-28 14:48:22.077    l:17    ViewController.swift       viewDidLoad()              
+2016-01-28 14:48:22.086    l:18    ViewController.swift       viewDidLoad()              Hello, World
+2016-01-28 14:48:22.087    l:19    ViewController.swift       viewDidLoad()              Hello World
+2016-01-28 14:48:22.087    l:20    ViewController.swift       viewDidLoad()              1 2 3 4 5 6 7 8 9
+2016-01-28 14:48:22.087    l:21    ViewController.swift       viewDidLoad()              My number is: 2
+2016-01-28 14:48:22.087    l:22    ViewController.swift       viewDidLoad()              I have 5 apples
+2016-01-28 14:48:22.088    l:23    ViewController.swift       viewDidLoad()              192.168.0.1
+2016-01-28 14:48:22.088    l:24    ViewController.swift       viewDidLoad()              Users/Vegard/Documents/sometext.txt
 ```
 Don't worry if your file name or method name is too long. It will simply be truncated to fit neatly within the columns like this `thisIsAVeryLongMethodNameThatW...`. If you for some reason want to change the default width (like if you have a huge or tiny monitor), this can be done by changing the `FileNameWidth` and `MethodNameWidth` found in the `Constants` struct at the top of `MOONLogger.swift`. They are 25 and 40 respectively by default.
 
@@ -68,13 +68,7 @@ If a file already exists, future calls to `MOONLog(...)` will simply append to t
 
 </br>
 ##### `MOONLogger.forceSaveAndCloseLogFile()`
-This function is used when you don't want any future `MOONLog(...)` calls to be written to a file, or your app is about to quit and you want to make sure everything is saved properly. A typical place for this would be just before the application gets terminated in `applicationWillTerminate(...)`, like this:
-```
-func applicationWillTerminate(application: UIApplication) {
-	MOONLogger.forceSaveAndCloseLogFile()
-}
-```
-If the file is already closed (either by already having called this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
+This function is used when you don't want any future `MOONLog(...)` calls to be written to a file. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically be the system. If the file is already closed (either by already having called this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
 
 </br>
 ##### `MOONLogger.clearLogFile()`
