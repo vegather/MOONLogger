@@ -61,7 +61,7 @@ func MOONLog(
             var timeValue = time(nil)
             let tmValue = localtime(&timeValue)
             
-            strftime(&buffer, bufferSize, "%Y-%m-%d %H.%M.%S", tmValue)
+            strftime(&buffer, bufferSize, "%Y-%m-%d %H:%M:%S", tmValue)
             if let dateFormat = String(CString: buffer, encoding: NSUTF8StringEncoding) {
                 var timeForMilliseconds = timeval()
                 gettimeofday(&timeForMilliseconds, nil)
@@ -124,20 +124,19 @@ public struct MOONLogger {
     
     
     /**
-     Force writes everything written to the file thus far to be saved (by flushing the file), and then closing it. 
-     
-     A good use case for this is in `applicationWillTerminate` of your `AppDelegate`. When you want to recreate the log file, simply call `MOONLogger.initializeLogFile()`.
+     Force writes everything written to the file thus far to be saved (by flushing the file), and then closing it. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically be the system. When you want to recreate the log file, simply call `MOONLogger.initializeLogFile()`.
      
      - seealso: `MOONLogger.initializeLogFile()`
      */
     public static func forceSaveAndCloseLogFile() {
         // Not doing this on the logQueue so that we can save and close ASAP, because the app might shut down at any moment.
         if logFile != nil {
-            flockfile(logFile)
-            fflush(logFile)
-            fclose(logFile)
-            funlockfile(logFile)
-            logFile = nil
+            dispatch_async(logQueue) {
+                flockfile(logFile)
+                fclose(logFile)
+                funlockfile(logFile)
+                logFile = nil
+            }
         }
     }
     
@@ -154,7 +153,6 @@ public struct MOONLogger {
             dispatch_async(logQueue) {
                 // Open the file for reading & writing, and destroy any content that's in there.
                 logFile = freopen(getLogFilePath(), "w+", logFile)
-                
             }
         }
         // If the file is closed, just delete the file at the file path. It will get recreated in 
@@ -175,8 +173,8 @@ public struct MOONLogger {
      - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/txt`). If there were some problem fetching the `logFile`, it will be nil.
      */
     public static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String) -> ()) {
-        if logFile == nil {
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+        dispatch_async(logQueue) {
+            if logFile == nil {
                 let tempLogFile = fopen(getLogFilePath(), "r")
                 if tempLogFile == nil {
                     dispatch_async(dispatch_get_main_queue()) {
@@ -185,12 +183,12 @@ public struct MOONLogger {
                     return
                 }
                 let data = fetchTheFile(tempLogFile)
+                fclose(tempLogFile)
                 dispatch_async(dispatch_get_main_queue()) {
                     completionHandler(logFile: data, mimeType: "text/txt")
                 }
-            }
-        } else {
-            dispatch_async(logQueue) {
+            } else {
+                fflush(logFile)
                 let data = fetchTheFile(logFile)
                 dispatch_async(dispatch_get_main_queue()) {
                     completionHandler(logFile: data, mimeType: "text/txt")
