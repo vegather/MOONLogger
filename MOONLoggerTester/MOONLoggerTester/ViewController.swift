@@ -27,7 +27,7 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
     }
     
     @IBAction func writeDataButtonTapped() {
-        for i in 0..<1000 {
+        for i in 0..<10 {
             MOONLog("MAIN:", i)
         }
     }

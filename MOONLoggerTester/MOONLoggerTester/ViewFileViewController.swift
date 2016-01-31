@@ -22,5 +22,4 @@ class ViewFileViewController: UIViewController {
             textView.text = text
         }
     }
-
 }
