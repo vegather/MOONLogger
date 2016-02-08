@@ -2,7 +2,7 @@
 
 ## Description
 
-MOON Logger is a replacement for the standard print statement in Swift for both iOS and OS X, to give more information about where a log statement came from. It will print out the date and time, file, function, line number, and the actual message, neatly organized into columns. It also has an option to save the log file to a .txt file, and to retrieve it later.
+MOON Logger is a replacement for the standard print statement in Swift for both iOS and OS X, to give more information about where a log statement came from. It will print out the date and time, file, function, line number, and the actual message, neatly organized into columns. This is useful when you want to retrace the steps your application took to get to a specific state. MOON Logger also has an option to save the log file to a .txt file, and to retrieve it later.
 
 It is thread-safe as everything runs on a single serial queue. An unfortunate side-effect of this is that if your app crashes, the last log statements before the crash won't have had time to be printed to the console yet. A workaround for this is to hit the ![Debug Run Button](http://imgur.com/t5NmEEQ.png)-button in the debugger a few times until you see the final log messages.
 
@@ -12,7 +12,7 @@ It is thread-safe as everything runs on a single serial queue. An unfortunate si
 
 ### Basic Usage
 
-MOON Logger primarily exposes one global function: `func MOONLog(items: Any...)`. This function can take any number of argument (including none), and will print them one after the other separated by whatever the `separator` argument is (the default is `" "`). This means that you can either call it with no arguments (like this `MOONLog()`) if you simply need to make sure one of your methods got called. Or you can pass in any objects or values you'd like to print out (like this `MOONLog("Hello, World")`), which will print out the location as well as the message. All the arguments you pass in will be converted to a `String` using `"\(...)"`. So for example `MOONLog(4, 2)` is equivalent to `MOONLog("\(4)" + " " + "\(2)")`, and the resulting message printed out will be `4 2`.
+MOON Logger primarily exposes one global function: `func MOONLog(items: Any...)`. This function can take any number of arguments (including none), and will print them one after the other separated by whatever the `separator` argument is (the default is `" "`). This means that you can either call it with no arguments (like this `MOONLog()`) if you simply need to make sure one of your methods got called. Or you can pass in any objects or values you'd like to print out (like this `MOONLog("Hello, World")`), which will print out the location as well as the message. All the arguments you pass in will be converted to a `String` using `"\(...)"`. So for example `MOONLog(4, 2)` is equivalent to `MOONLog("\(4)" + " " + "\(2)")`, and the resulting message printed out will be `4 2`.
 
 The example below shows some different ways you can call `MOONLog(...)`, and what the resulting output in the console would be.
 
@@ -43,13 +43,13 @@ override func viewDidLoad() {
 ```
 Don't worry if your file name or method name is too long. It will simply be truncated to fit neatly within the columns like this `thisIsAVeryLongMethodNameThatW...`. If you for some reason want to change the default width (like if you have a huge or tiny monitor), this can be done by changing the `FileNameWidth` and `MethodNameWidth` found in the `Constants` struct at the top of `MOONLogger.swift`. They are 25 and 40 respectively by default.
 
-The `Constants` struct also has two other constants (`LogFileName` and `ShouldIncludeTime`) which you can change to your liking. Setting `ShouldIncludeTime` to false will give you a performance increase of about 25%, but you will of course not be able to tell when the log happened. This is true both for the standard output to console, as well as for writing to the log file.
+The `Constants` struct also has two other constants (`LogFileName` and `ShouldIncludeTime`) which you can change to your liking. Setting `ShouldIncludeTime` to `false` will give you a performance increase of about 25%, but you will of course not be able to tell when the log happened. This is true both for the standard output to console, as well as for writing to the log file.
 
 </br>
 
 ### Reading & Writing the Log to a File
 
-To handle the log file, MOON Logger exposes a struct called `MOONLogger` which has four static functions:
+To manage the log file, MOON Logger exposes a struct called `MOONLogger` which has four static functions:
 - `static func initializeLogFile()`
 - `static func forceSaveAndCloseLogFile()`
 - `static func clearLogFile()`
@@ -68,7 +68,7 @@ If a file already exists, future calls to `MOONLog(...)` will simply append to t
 
 </br>
 ##### `MOONLogger.forceSaveAndCloseLogFile()`
-This function is used when you don't want any future `MOONLog(...)` calls to be written to a file. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically be the system. If the file is already closed (either by already having called this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
+This function is used when you don't want any future `MOONLog(...)` calls to be written to a file. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically by the system. If the file is already closed (either by already having called this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
 
 </br>
 ##### `MOONLogger.clearLogFile()`
@@ -76,7 +76,7 @@ This function will delete everything written to the log file thus far. This is u
 
 </br>
 ##### `MOONLogger.getLogFile(...)`
-The final function is used to retrieve the log file. It takes a `completionHandler` that will contain both the `logFile` as an `NSData?`, and the `mimeType` of the data (currently this will be `text/txt`) as a `String`. If you have just made a lot of calls to `MOONLog(...)`, it might take a while before the `completionHandler` is called as it waits for all the logs to be written to the log file. Whenever it does get called, it will be called on the main thread. The `logFile` argument of the `completionHandler` is an optional and will be `nil` if there was some problem retrieving the file (like if the file has not yet been created). You should use optional binding (`if let ...`) to get the actual data. A typical use case might, look like this:
+The final function is used to retrieve the log file. It takes a `completionHandler` that will contain both the `logFile` as an `NSData?`, and the `mimeType` of the data (currently this will be `text/txt`) as a `String`. If you have just made a lot of calls to `MOONLog(...)`, it might take a while before the `completionHandler` is called as it waits for all the logs to be written to the log file. Whenever it does get called, it will be called on the main thread. The `logFile` argument of the `completionHandler` is an optional and will be `nil` if there was some problem retrieving the file (like if the file has not yet been created). You should use optional binding (`if let ...`) to get the actual data. A typical use case might look like this:
 ```
 MOONLogger.getLogFile() { logFile, mimeType in
 	if let logFile = logFile {
