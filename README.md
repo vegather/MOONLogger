@@ -76,7 +76,7 @@ This function will delete everything written to the log file thus far. This is u
 
 </br>
 ##### `MOONLogger.getLogFile(...)`
-The final function is used to retrieve the log file. It takes a `completionHandler` that will contain both the `logFile` as an `NSData?`, and the `mimeType` of the data (currently this will be `text/txt`) as a `String`. If you have just made a lot of calls to `MOONLog(...)`, it might take a while before the `completionHandler` is called as it waits for all the logs to be written to the log file. Whenever it does get called, it will be called on the main thread. The `logFile` argument of the `completionHandler` is an optional and will be `nil` if there was some problem retrieving the file (like if the file has not yet been created). You should use optional binding (`if let ...`) to get the actual data. A typical use case might look like this:
+The final function is used to retrieve the log file. It takes a `completionHandler` that will contain both the `logFile` as an `NSData?`, and the `mimeType` of the data (currently this will be `text/plain`) as a `String`. If you have just made a lot of calls to `MOONLog(...)`, it might take a while before the `completionHandler` is called as it waits for all the logs to be written to the log file. Whenever it does get called, it will be called on the main thread. The `logFile` argument of the `completionHandler` is an optional and will be `nil` if there was some problem retrieving the file (like if the file has not yet been created). You should use optional binding (`if let ...`) to get the actual data. A typical use case might look like this:
 ```
 MOONLogger.getLogFile() { logFile, mimeType in
 	if let logFile = logFile {

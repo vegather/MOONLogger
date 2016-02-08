@@ -185,13 +185,13 @@ public struct MOONLogger {
                 let data = fetchTheFile(tempLogFile)
                 fclose(tempLogFile)
                 dispatch_async(dispatch_get_main_queue()) {
-                    completionHandler(logFile: data, mimeType: "text/txt")
+                    completionHandler(logFile: data, mimeType: "text/plain")
                 }
             } else {
                 fflush(logFile)
                 let data = fetchTheFile(logFile)
                 dispatch_async(dispatch_get_main_queue()) {
-                    completionHandler(logFile: data, mimeType: "text/txt")
+                    completionHandler(logFile: data, mimeType: "text/plain")
                 }
             }
         }
