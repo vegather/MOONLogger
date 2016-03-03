@@ -100,4 +100,3 @@ Below is a screenshot with example output of MOON Logger. The first two are from
 ## Contact
 
 - [@vegather on Twitter](http://www.twitter.com/vegather)
-- [vegather@icloud.com](mailto:vegather@icloud.com)
