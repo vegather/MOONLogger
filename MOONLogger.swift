@@ -39,14 +39,14 @@ private var logFile: UnsafeMutablePointer<FILE> = nil
  - Parameter separator: An optional separator string that will be inserted between each of the `items`.
  - Parameter stream: The stream to write the `items` to. Primarily used for testing. Defaults to stdout, which is the same place the normal `print(...)` call prints to.
 
- The `filePath`, `functionName`, and `lineNumber` arguments should be left as they are. They default to `__FILE__`, `__FUNCTION__`, and `__LINE__` respectively, which is how `MOONLog(...)` is able to do its magic.
+ The `filePath`, `functionName`, and `lineNumber` arguments should be left as they are. They default to `#file`, `#function`, and `#line` respectively, which is how `MOONLog(...)` is able to do its magic.
  */
 func MOONLog(
     items       : Any...,
     separator   : String = " ",
-    filePath    : String = __FILE__,
-    functionName: String = __FUNCTION__,
-    lineNumber  : Int    = __LINE__,
+    filePath    : String = #file,
+    functionName: String = #function,
+    lineNumber  : Int    = #line,
     stream      : UnsafeMutablePointer<FILE> = stdout)
 {
     dispatch_async(logQueue) {
