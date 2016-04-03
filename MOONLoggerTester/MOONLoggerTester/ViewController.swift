@@ -12,7 +12,7 @@ import MessageUI
 class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
     
     @IBAction func forceSaveAndCloseButtonTapped() {
-        MOONLogger.forceSaveAndCloseLogFile()
+        MOONLogger.stopWritingToLogFile()
         print("forceSaveAndCloseButtonTapped")
     }
     
@@ -22,13 +22,13 @@ class ViewController: UIViewController, MFMailComposeViewControllerDelegate {
     }
     
     @IBAction func openFileButtonTapped() {
-        MOONLogger.initializeLogFile()
+        MOONLogger.startWritingToLogFile()
         print("openFileButtonTapped")
     }
     
     @IBAction func writeDataButtonTapped() {
         for i in 0..<10 {
-            MOONLog("MAIN:", i)
+            MOONLog("😀 MAIN:", i)
         }
     }
     

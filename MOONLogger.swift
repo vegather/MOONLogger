@@ -129,7 +129,6 @@ public struct MOONLogger {
      - seealso: `MOONLogger.startWritingToLogFile()`
      */
     public static func stopWritingToLogFile() {
-        // Not doing this on the logQueue so that we can save and close ASAP, because the app might shut down at any moment.
         if logFile != nil {
             dispatch_async(logQueue) {
                 flockfile(logFile)
@@ -142,7 +141,7 @@ public struct MOONLogger {
     
     
     /**
-     If the file is open (from calling `startWritingToLogFile()`), this will wait until every pending write to the file is completed before clearing the file.
+     If the file is open (from calling `startWritingToLogFile()`), this will wait (asynchronously in the background) until every pending write to the file is completed before clearing the file. It will immediately regardless of the state of the log file.
      */
     public static func clearLogFile() {
         // If the file is open, use freopen to close it and the reopen it with a new mode (w+)
@@ -151,8 +150,13 @@ public struct MOONLogger {
             // statements that were done before this call is finished before clearing it.
             // That way you won't get any leftover junk in the file.
             dispatch_async(logQueue) {
-                // Open the file for reading & writing, and destroy any content that's in there.
-                logFile = freopen(getLogFilePath(), "w+", logFile)
+                // The file might have been closed while waiting
+                if logFile != nil {
+                    // Open the file for reading & writing, and destroy any content that's in there.
+                    logFile = freopen(getLogFilePath(), "w+", logFile)
+                } else {
+                    remove(getLogFilePath())
+                }
             }
         }
         // If the file is closed, just delete the file at the file path. It will get recreated in 
@@ -217,12 +221,10 @@ public struct MOONLogger {
     /// Do the printing using `putc()` nested in `flockfile()` and `funlockfile()` to
     /// ensure that `MOONLog()` and regular `print()` statements doesn't get interleaved.
     private static func writeMessage(message: String, toStream outStream: UnsafeMutablePointer<FILE>) {
-        var stdoutGenerator =  message.unicodeScalars.generate()
         flockfile(outStream)
-        while let char = stdoutGenerator.next() {
-            putc(Int32(char.value), outStream)
+        for char in (message + "\n").utf8 {
+            putc(Int32(char), outStream)
         }
-        putc(10, outStream) // NewLine
         funlockfile(outStream)
     }
     
