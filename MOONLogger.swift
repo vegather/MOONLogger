@@ -141,7 +141,11 @@ public struct MOONLogger {
     
     
     /**
-     If the file is open (from calling `startWritingToLogFile()`), this will wait (asynchronously in the background) until every pending write to the file is completed before clearing the file. It will immediately regardless of the state of the log file.
+     If the file is open (from calling `startWritingToLogFile()`), this will wait (asynchronously in the background) until every pending write to the file is completed before clearing the file. It will immediately regardless of the state of the log file. 
+     
+     After calling this, the `NSData` returned from `MOONLogger.getLogFile(...)` might return `nil`, depending on if the log file is open or closed.
+     
+     - seealso: `MOONLogger.getLogFile(...)`
      */
     public static func clearLogFile() {
         // If the file is open, use freopen to close it and the reopen it with a new mode (w+)

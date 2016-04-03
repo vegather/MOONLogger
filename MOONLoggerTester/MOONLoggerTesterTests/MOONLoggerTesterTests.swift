@@ -97,7 +97,8 @@ class MOONLoggerTesterTests: XCTestCase {
         let message = "Hello, World"
         
         MOONLogger.startWritingToLogFile()
-        MOONLog(message)
+        // Using the stream argument because I don't want this to show up in the console
+        MOONLog(message, stream: testFile)
         
         let getLogFileExpectation = expectationWithDescription("Got the log file")
         MOONLogger.getLogFile() { logFile, _ in
@@ -122,7 +123,8 @@ class MOONLoggerTesterTests: XCTestCase {
         let message = "Hello, World"
         
         MOONLogger.startWritingToLogFile()
-        MOONLog(message)
+        // Using the stream argument because I don't want this to show up in the console
+        MOONLog(message, stream: testFile)
         MOONLogger.stopWritingToLogFile()
         
         let getLogFileExpectation = expectationWithDescription("Got the log file")
@@ -144,15 +146,78 @@ class MOONLoggerTesterTests: XCTestCase {
     }
     
     func testClearLogFileWhileOpen() {
+        let message = "Hello, World"
         
+        MOONLogger.startWritingToLogFile()
+        // Using the stream argument because I don't want this to show up in the console
+        MOONLog(message, stream: testFile)
+        MOONLogger.clearLogFile()
+        
+        let getLogFileExpectation = expectationWithDescription("Got the log file")
+        MOONLogger.getLogFile() { logFile, _ in
+            guard let logFile = logFile else {
+                XCTFail("The log file was nil")
+                return
+            }
+            
+            guard let decodedMessage = String(data: logFile, encoding: NSUTF8StringEncoding) else {
+                XCTFail("Could not decode the log file")
+                return
+            }
+            
+            XCTAssertEqual(decodedMessage, "")
+            getLogFileExpectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(5.0, handler: nil)
+        
+        // Assuming that this cleanup will work
+        MOONLogger.stopWritingToLogFile()
     }
     
     func testClearLogFileWhileClosed() {
+        let message = "Hello, World"
         
+        MOONLogger.startWritingToLogFile()
+        // Using the stream argument because I don't want this to show up in the console
+        MOONLog(message, stream: testFile)
+        MOONLogger.stopWritingToLogFile()
+        MOONLogger.clearLogFile()
+        
+        let getLogFileExpectation = expectationWithDescription("Got the log file")
+        MOONLogger.getLogFile() { logFile, _ in
+            XCTAssertNil(logFile, "Expected the log file to not exist")
+            getLogFileExpectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(5.0, handler: nil)
     }
     
     func testWritingUnicodeToLogFile() {
+        let message = "👌👌🏻👌🏼👌🏽👌🏾👌🏿😀🤖🇨🇦"
         
+        MOONLogger.startWritingToLogFile()
+        // Using the stream argument because I don't want this to show up in the console
+        MOONLog(message, stream: testFile)
+        
+        let getLogFileExpectation = expectationWithDescription("Got the log file")
+        MOONLogger.getLogFile() { logFile, _ in
+            guard let logFile = logFile else {
+                XCTFail("The log file was nil")
+                return
+            }
+            
+            guard let decodedMessage = String(data: logFile, encoding: NSUTF8StringEncoding) else {
+                XCTFail("Could not decode the log file")
+                return
+            }
+            
+            XCTAssert(decodedMessage.hasSuffix(message + "\n"), "\(decodedMessage) did not have the suffix \(message)")
+            getLogFileExpectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5.0, handler: nil)
+        
+        MOONLogger.stopWritingToLogFile()
+        MOONLogger.clearLogFile()
     }
     
     
