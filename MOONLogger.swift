@@ -114,21 +114,21 @@ public struct MOONLogger {
     /**
      Sets up the log file. If there already exists a log file, future `MOONLog(...)` calls will simply append to that file. If no file exists, a new one is created.
      
-     This should be called as soon as you want to store logs in a log file. Typically you would call this at the beginning of `application(_: didFinishLaunchingWithOptions:)` in your `AppDelegate`.
+     This should be called as soon as you want to store `MOONLog(...)` calls in a log file. Typically you would call this at the beginning of `application(_: didFinishLaunchingWithOptions:)` in your `AppDelegate`.
      
      - seealso: `application(_: didFinishLaunchingWithOptions:)`
      */
-    public static func initializeLogFile() {
+    public static func startWritingToLogFile() {
         if logFile == nil { logFile = fopen(getLogFilePath(), "a+") }
     }
     
     
     /**
-     Force writes everything written to the file thus far to be saved (by flushing the file), and then closing it. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically be the system. When you want to recreate the log file, simply call `MOONLogger.initializeLogFile()`.
+     After calling this, all calls to `MOONLog(...)` will not be written to the log file. If you want your `MOONLog...` calls to be written to the log file again, simply call `MOONLogger.startWritingToLogFile()`. This method writes everything written to the file thus far to be saved (by flushing the file), and then closes the file. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically be the system.
      
-     - seealso: `MOONLogger.initializeLogFile()`
+     - seealso: `MOONLogger.startWritingToLogFile()`
      */
-    public static func forceSaveAndCloseLogFile() {
+    public static func stopWritingToLogFile() {
         // Not doing this on the logQueue so that we can save and close ASAP, because the app might shut down at any moment.
         if logFile != nil {
             dispatch_async(logQueue) {
@@ -142,7 +142,7 @@ public struct MOONLogger {
     
     
     /**
-     If the file is open (from calling `initializeLogFile()`), this will wait until every pending write to the file is completed before clearing the file.
+     If the file is open (from calling `startWritingToLogFile()`), this will wait until every pending write to the file is completed before clearing the file.
      */
     public static func clearLogFile() {
         // If the file is open, use freopen to close it and the reopen it with a new mode (w+)
@@ -156,7 +156,7 @@ public struct MOONLogger {
             }
         }
         // If the file is closed, just delete the file at the file path. It will get recreated in 
-        // getLogFile(...) or through initializeLogFile() at some later point
+        // getLogFile(...) or through startWritingToLogFile() at some later point
         else {
             remove(getLogFilePath())
         }
@@ -164,11 +164,11 @@ public struct MOONLogger {
     
     
     /**
-     If you have initialized a log file (see `initializeLogFile()`), this will wait until all pending `MOONLog(...)` calls are written to the file, and then returns the `logFile` data in a `completionHandler` on the main queue. If you have not initialized the log file, or closed it (see `forceSaveAndClose()`), the log file will get returned as soon as possible in the completion handler on the main thread.
+     If you have initialized a log file (see `startWritingToLogFile()`), this will wait until all pending `MOONLog(...)` calls are written to the file, and then returns the `logFile` data in the `completionHandler` on the main queue. If you have not initialized the log file, or closed it (see `stopWritingToLogFile()`), the log file will get returned immediately in the completion handler on the main thread.
      
-     - seealso: `initializeLogFile()`
+     - seealso: `startWritingToLogFile()`
      
-     `forceSaveAndClose()`
+     `stopWritingToLogFile()`
      
      - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/txt`). If there were some problem fetching the `logFile`, it will be nil.
      */

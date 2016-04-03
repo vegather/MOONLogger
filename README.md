@@ -50,29 +50,29 @@ The `Constants` struct also has two other constants (`LogFileName` and `ShouldIn
 ### Reading & Writing the Log to a File
 
 To manage the log file, MOON Logger exposes a struct called `MOONLogger` which has four static functions:
-- `static func initializeLogFile()`
-- `static func forceSaveAndCloseLogFile()`
+- `static func startWritingToLogFile()`
+- `static func stopWritingToLogFile()`
 - `static func clearLogFile()`
 - `static func getLogFile(completionHandler: (logFile: NSData?, mimeType: String) -> ())`
 
 </br>
-##### `MOONLogger.initializeLogFile()`
-Call this function whenever you want your future `MOONLog(...)` calls to be saved to a file. If you want all calls to be saved to a file, you can call `initializeLogFile()` as soon as your application finishes launching, like this:
+##### `MOONLogger.startWritingToLogFile()`
+Call this function whenever you want your future `MOONLog(...)` calls to be saved to a file. If you want all calls to be saved to a file, you can call `startWritingToLogFile()` as soon as your application finishes launching, like this:
 ```
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    MOONLogger.initializeLogFile()
+    MOONLogger.startWritingToLogFile()
     return true
 }
 ```
 If a file already exists, future calls to `MOONLog(...)` will simply append to that file. If the file is already open, calling this function does nothing.
 
 </br>
-##### `MOONLogger.forceSaveAndCloseLogFile()`
-This function is used when you don't want any future `MOONLog(...)` calls to be written to a file. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically by the system. If the file is already closed (either by already having called this, or by not yet having called `initializeLogFile()`), calling this function does nothing.
+##### `MOONLogger.stopWritingToLogFile()`
+This function is used when you don't want any future `MOONLog(...)` calls to be written to a file. There's no need to call this when the app is closing (in `applicationWillTerminate()`) as the file will be saved and closed automatically by the system. If the file is already closed (either by already having called this, or by not yet having called `startWritingToLogFile()`), calling this function does nothing.
 
 </br>
 ##### `MOONLogger.clearLogFile()`
-This function will delete everything written to the log file thus far. This is useful after the log file has somehow been collected, and you don't need it anymore. It doesn't matter if the file is open or closed while calling this. After the call, everything will be the same, except the file will be cleared.
+This function will delete everything written to the log file thus far. This is useful after the log file has somehow been collected, and you don't need it anymore. It doesn't matter if the file is open or closed while calling this. After the call, everything will be the same, except the file will be cleared. This means that if you call `MOONLogger.startWritingToLogFile()`, and then `MOONLogger.clearLogFile()`, future call to `MOONLog(...)` will be written to the log file.
 
 </br>
 ##### `MOONLogger.getLogFile(...)`
