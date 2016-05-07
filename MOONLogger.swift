@@ -35,19 +35,33 @@ private var logFile: UnsafeMutablePointer<FILE> = nil
 /**
  A log statement that lets you easily see which file, function, and line number a log statement came from.
  
- - Parameter items: An optional list of items you want printed. Every item will be converted to a `String` like this: `"\(item)"`.
- - Parameter separator: An optional separator string that will be inserted between each of the `items`.
- - Parameter stream: The stream to write the `items` to. Primarily used for testing. Defaults to stdout, which is the same place the normal `print(...)` call prints to.
-
+ <br>
+ 
+ Usually you would call this function with just one argument, like this:
+ ```
+ MOONLog("Hello, World!")
+ ```
+ This will print out a timestamp, the file, function, and line number the call was from, as well as the message you provided
+ 
+ <br><br>
+ 
  The `filePath`, `functionName`, and `lineNumber` arguments should be left as they are. They default to `#file`, `#function`, and `#line` respectively, which is how `MOONLog(...)` is able to do its magic.
+ 
+ The `stream` and `errorStream` arguments are the locations that `MOONLog` will write to. `errorStream` will be used if `isError` is `true`, otherwise `stream` is used. `stream` defaults to `stdout` whereas `errorStream` defaults to `stderr`.
+
+ - Parameter items: `Any...` - An optional list of items you want printed. Every item will be converted to a `String` like this: `"\(item)"`.
+ - Parameter separator: `String` - An optional separator string that will be inserted between each of the `items`.
+ - Parameter isError: `Bool` - If `true`, a ❌ will be prepended to the message to make errors more visible in the console. The output will be `errorStream` instead of `stream` if this is `true`. The default is `false`.
  */
 func MOONLog(
     items       : Any...,
     separator   : String = " ",
+    isError     : Bool   = false,
     filePath    : String = #file,
     functionName: String = #function,
     lineNumber  : Int    = #line,
-    stream      : UnsafeMutablePointer<FILE> = stdout)
+    stream      : UnsafeMutablePointer<FILE> = stdout,
+    errorStream : UnsafeMutablePointer<FILE> = stderr)
 {
     dispatch_async(logQueue) {
         
@@ -86,7 +100,7 @@ func MOONLog(
         }
         
         // Construct the message to be printed
-        var message = ""
+        var message = isError ? "❌ " : ""
         for (i, item) in items.enumerate() {
             message += "\(item)"
             if i < items.count-1 { message += separator }
@@ -99,7 +113,8 @@ func MOONLog(
             message)
         
         // Write to the specified stream (stdout by default)
-        MOONLogger.writeMessage(printString, toStream: stream)
+        if isError { MOONLogger.writeMessage(printString, toStream: errorStream) }
+        else       { MOONLogger.writeMessage(printString, toStream: stream) }
         
         if logFile != nil {
             // Write to the logFile

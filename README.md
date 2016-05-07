@@ -28,6 +28,7 @@ override func viewDidLoad() {
     MOONLog("I have \(5) apples")
     MOONLog(192, 168, 0, 1, separator: ".")
     MOONLog("Users", "Vegard", "Documents", "sometext.txt", separator: "/")
+    MOONLog("Failed to process JSON", isError: true)
 }
 ```
 
@@ -40,6 +41,7 @@ override func viewDidLoad() {
 2016-01-28 14:48:22.087    l:22    ViewController.swift       viewDidLoad()              I have 5 apples
 2016-01-28 14:48:22.088    l:23    ViewController.swift       viewDidLoad()              192.168.0.1
 2016-01-28 14:48:22.088    l:24    ViewController.swift       viewDidLoad()              Users/Vegard/Documents/sometext.txt
+2016-01-28 14:48:22.088    l:25    ViewController.swift       viewDidLoad()              ❌ Failed to process JSON
 ```
 Don't worry if your file name or method name is too long. It will simply be truncated to fit neatly within the columns like this `thisIsAVeryLongMethodNameThatW...`. If you for some reason want to change the default width (like if you have a huge or tiny monitor), this can be done by changing the `FileNameWidth` and `MethodNameWidth` found in the `Constants` struct at the top of `MOONLogger.swift`. They are 25 and 40 respectively by default.
 
