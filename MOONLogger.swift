@@ -223,11 +223,14 @@ public struct MOONLogger {
     
     /// *Synchronously* gets the data that's in the logFile, and returns it as an NSData.
     private static func fetchTheFile(file: UnsafeMutablePointer<FILE>) -> NSData {
+        let data = NSMutableData()
+
         flockfile(file)
         rewind(file)
         
-        let data = NSMutableData()
+        // let data = NSMutableData()
         var c = fgetc(file)
+        // while let c = fgetc(file) where c != EOF {
         while c != EOF {
             data.appendBytes(&c, length: sizeof(Int8))
             c = fgetc(file)
