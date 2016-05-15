@@ -22,7 +22,6 @@ import Foundation
 
 private struct Constants {
     static let ShouldIncludeTime = true
-    static let TimestampFormat   = "%Y-%m-%d %H:%M:%S" /* Documentation: http://www.cplusplus.com/reference/ctime/strftime/ */
     static let FileNameWidth     = 25
     static let MethodNameWidth   = 40
 }
@@ -75,7 +74,7 @@ func MOONLog(
             var timeValue = time(nil)
             let tmValue = localtime(&timeValue)
             
-            strftime(&buffer, bufferSize, Constants.TimestampFormat, tmValue)
+            strftime(&buffer, bufferSize, "%Y-%m-%d %H:%M:%S", tmValue)
             if let dateFormat = String(CString: buffer, encoding: NSUTF8StringEncoding) {
                 var timeForMilliseconds = timeval()
                 gettimeofday(&timeForMilliseconds, nil)
@@ -119,8 +118,6 @@ func MOONLog(
         if logFile != nil {
             // Write to the logFile
             MOONLogger.writeMessage(printString, toStream: logFile)
-            // Save the file immediately (not very efficient). Could benefit from some kind of watchdog
-            fflush(logFile)
         }
     }
 }
@@ -158,24 +155,32 @@ public struct MOONLogger {
     
     
     /**
-     Removes all the data stored in the log file on a background thread, and returns immediately.
+     If the file is open (from calling `startWritingToLogFile()`), this will wait (asynchronously in the background) until every pending write to the file is completed before clearing the file. It will immediately regardless of the state of the log file. 
      
-     After calling this, the `NSData` returned from `MOONLogger.getLogFile(...)` will be `nil`.
+     After calling this, the `NSData` returned from `MOONLogger.getLogFile(...)` might return `nil`, depending on if the log file is open or closed.
+     
      - seealso: `MOONLogger.getLogFile(...)`
-     
-     `MOONLogger.startWritingToLogFile()`
      */
     public static func clearLogFile() {
-        // Doing it asynchronously on the logQueue to make sure all the MOONLog(...)
-        // statements that were done before this call is finished before clearing it.
-        // That way you won't get any leftover junk in the file.
-        dispatch_async(logQueue) {
-            if logFile != nil {
-                // Open the file for reading & writing, and destroy any content that's in there.
-                logFile = freopen(getLogFilePath(), "w+", logFile)
-            } else {
-                remove(getLogFilePath())
+        // If the file is open, use freopen to close it and the reopen it with a new mode (w+)
+        if logFile != nil {
+            // Doing it asynchronously on the logQueue to make sure all the MOONLog(...)
+            // statements that were done before this call is finished before clearing it.
+            // That way you won't get any leftover junk in the file.
+            dispatch_async(logQueue) {
+                // The file might have been closed while waiting
+                if logFile != nil {
+                    // Open the file for reading & writing, and destroy any content that's in there.
+                    logFile = freopen(getLogFilePath(), "w+", logFile)
+                } else {
+                    remove(getLogFilePath())
+                }
             }
+        }
+        // If the file is closed, just delete the file at the file path. It will get recreated in 
+        // getLogFile(...) or through startWritingToLogFile() at some later point
+        else {
+            remove(getLogFilePath())
         }
     }
     
@@ -183,14 +188,12 @@ public struct MOONLogger {
     /**
      If you have initialized a log file (see `startWritingToLogFile()`), this will wait until all pending `MOONLog(...)` calls are written to the file, and then returns the `logFile` data in the `completionHandler` on the callbackQueue (will default to the main queue). If you have not initialized the log file, or closed it (see `startWritingToLogFile()` and `stopWritingToLogFile()`), the log file will get returned immediately in the completion handler on the callbackQueue.
      
-     - seealso: `MOONLogger.startWritingToLogFile()`
+     - seealso: `startWritingToLogFile()`
      
-     `MOONLogger.stopWritingToLogFile()`
+     `stopWritingToLogFile()`
      
-     `MOONLogger.clearLogFile()`
-     
-     - Parameter callbackQueue: An optional argument where you can pass in the queue you want the `completionHandler` to be called on. If you don't provide this argument, it will default to `dispatch_get_main_queue()`.
-     - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/plain`). The `mimeType` is useful if you plan on sending this data in an email, or something similar. If the log file was empty (either because you called `clearLogFile` or because you never called `startWritingToLogFile`), `logFile` will be nil, and `mimeType` will be an empty string.
+     - Parameter callbackQueue: An optional argument where you can pass in the queue you want the `completionHandler` to be called on. If you don't provide this argument, it well default to `dispatch_get_main_queue()`.
+     - Parameter completionHandler: A completion handler that returns both the `logData` as well as the `mimeType` of the log file (currently `text/txt`). The `mimeType` is useful if you plan on sending this data in an email, or something similar. If there were some problem fetching the `logFile`, it will be nil.
      */
     public static func getLogFile(
         callbackQueue callbackQueue: dispatch_queue_t = dispatch_get_main_queue(),
@@ -208,9 +211,7 @@ public struct MOONLogger {
                 let data = fetchTheFile(tempLogFile)
                 fclose(tempLogFile)
                 dispatch_async(callbackQueue) {
-                    // If the data length is 0, return nil
-                    if data.length == 0 { completionHandler(logFile: nil , mimeType: "")           }
-                    else                { completionHandler(logFile: data, mimeType: "text/plain") }
+                    completionHandler(logFile: data, mimeType: "text/plain")
                 }
             } else {
                 fflush(logFile)
@@ -225,12 +226,14 @@ public struct MOONLogger {
     
     /// *Synchronously* gets the data that's in the logFile, and returns it as an NSData.
     private static func fetchTheFile(file: UnsafeMutablePointer<FILE>) -> NSData {
-        let data = NSMutableData()
-        
         flockfile(file)
         rewind(file)
-        while var c = Optional(fgetc(file)) where c != EOF {
+        
+        let data = NSMutableData()
+        var c = fgetc(file)
+        while c != EOF {
             data.appendBytes(&c, length: sizeof(Int8))
+            c = fgetc(file)
         }
         funlockfile(file)
         
@@ -258,25 +261,38 @@ public struct MOONLogger {
     /// If some error happened along the way, this will return an empty string (""). The reasoning behind this is that all the stdio calls (fopen, remove, freopen) will quietly fail (by returning some error value). MOONLogger is prepared to handle these failures.
     private static func getLogFilePath() -> String {
         #if os(OSX)
-            return makeSureLogFileWithFoldersExistsInDirectory(.LibraryDirectory)  ?? ""
+            // Get the Library folder
+            let libraryDirectories = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)
+            guard libraryDirectories.count == 1 else {
+                MOONLog("Unknown number of library folders: \(libraryDirectories)")
+                return ""
+            }
+            
+            let logPath = (libraryDirectories[0] as NSString).stringByAppendingPathComponent("Logs")
+            return makeSureLogFileExistsInDirectory(logPath) ?? ""
+            
         #elseif os(iOS)
-            return makeSureLogFileWithFoldersExistsInDirectory(.DocumentDirectory) ?? ""
+            let documentDirectories = NSSearchPathForDirectoriesInDomains(
+                .DocumentDirectory,
+                .UserDomainMask,
+                true
+            )
+            guard documentDirectories.count == 1 else {
+                MOONLog("Weird number of document directories: \(documentDirectories)", isError: true)
+                return ""
+            }
+            
+            let logPath = (documentDirectories[0] as NSString).stringByAppendingPathComponent("Logs")
+            return makeSureLogFileExistsInDirectory(logPath) ?? ""
+        
         #else
             return ""
         #endif
     }
     
-    /// Returns the path to the file if the folder exists, or if it was successfully created.
+    /// Returns the path if the folder exists, or if it was successfully created.
     /// Returns nil if the folder does not exists, and could not be created.
-    private static func makeSureLogFileWithFoldersExistsInDirectory(searchPathDirectory: NSSearchPathDirectory) -> String? {
-        let foundDirectories = NSSearchPathForDirectoriesInDomains(searchPathDirectory, .UserDomainMask, true )
-        guard foundDirectories.count == 1 else {
-            MOONLog("Weird number of document directories: \(foundDirectories)", isError: true)
-            return nil
-        }
-        
-        let logsFolder = (foundDirectories[0] as NSString).stringByAppendingPathComponent("Logs")
-        
+    private static func makeSureLogFileExistsInDirectory(path: String) -> String? {
         // Get the CFBundleDisplayName if it's present, otherwise get the CFBundleName
         let infoDict = NSBundle.mainBundle().infoDictionary
         guard let appName = infoDict?["CFBundleDisplayName"] as? String ?? infoDict?["CFBundleName"] as? String else {
@@ -284,23 +300,13 @@ public struct MOONLogger {
             return ""
         }
         
-        // Make sure the "Logs/<AppName> Logs" folder exists
-        let logFolder = (logsFolder as NSString).stringByAppendingPathComponent("\(appName) Logs")
+        let logFolder = (path as NSString).stringByAppendingPathComponent("\(appName) Logs")
         guard makeSureFolderExistsAtPath(logFolder) else { return nil }
         
-        // Create the path to the file
         let logWithoutExtension = (logFolder as NSString).stringByAppendingPathComponent(appName)
         guard let path = (logWithoutExtension as NSString).stringByAppendingPathExtension("log") else {
             MOONLog("Could not add extension \"log\" to path \(logWithoutExtension)", isError: true)
             return nil
-        }
-        
-        // Make sure the file exists, return nil if it couldn't be created
-        if NSFileManager.defaultManager().fileExistsAtPath(path) == false {
-            guard NSFileManager.defaultManager().createFileAtPath(path, contents: nil, attributes: nil) else {
-                MOONLog("Unable to create the file at path: \(path)", isError: true)
-                return nil
-            }
         }
         
         return path
@@ -312,6 +318,7 @@ public struct MOONLogger {
         var isFolder: ObjCBool = false
         NSFileManager.defaultManager().fileExistsAtPath(path, isDirectory: &isFolder)
         if isFolder.boolValue == false {
+            MOONLog("The folder \(path) does not yet exist. Creating it now...", isError: true)
             do {
                 try NSFileManager.defaultManager().createDirectoryAtPath(
                     path,
