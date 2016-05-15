@@ -185,7 +185,7 @@ class MOONLoggerTesterTests: XCTestCase {
         
         let getLogFileExpectation = expectationWithDescription("Got the log file")
         MOONLogger.getLogFile() { logFile, _ in
-            XCTAssertNil(logFile, "Expected the log file to not exist")
+            XCTAssertNil(logFile, "Expected the log file to not exist. Has size: \(logFile?.length)")
             getLogFileExpectation.fulfill()
         }
         waitForExpectationsWithTimeout(5.0, handler: nil)

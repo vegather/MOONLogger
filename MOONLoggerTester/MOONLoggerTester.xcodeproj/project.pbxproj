@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		9A1109B51C59443D00EEB01E /* ViewFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1109B41C59443D00EEB01E /* ViewFileViewController.swift */; };
+		9A93C8F31CE7B6670088467C /* MOONLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A93C8F21CE7B6670088467C /* MOONLogger.swift */; };
 		9AB8DDDA1C57D283000AF114 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDD91C57D283000AF114 /* AppDelegate.swift */; };
 		9AB8DDDC1C57D283000AF114 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDDB1C57D283000AF114 /* ViewController.swift */; };
 		9AB8DDDF1C57D283000AF114 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AB8DDDD1C57D283000AF114 /* Main.storyboard */; };
 		9AB8DDE11C57D283000AF114 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AB8DDE01C57D283000AF114 /* Assets.xcassets */; };
 		9AB8DDE41C57D283000AF114 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AB8DDE21C57D283000AF114 /* LaunchScreen.storyboard */; };
 		9AB8DDEF1C57D283000AF114 /* MOONLoggerTesterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDEE1C57D283000AF114 /* MOONLoggerTesterTests.swift */; };
-		9AB8DDFA1C57D2E3000AF114 /* MOONLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB8DDF91C57D2E3000AF114 /* MOONLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		9A1109B41C59443D00EEB01E /* ViewFileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewFileViewController.swift; sourceTree = "<group>"; };
+		9A93C8F21CE7B6670088467C /* MOONLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MOONLogger.swift; path = ../../MOONLogger.swift; sourceTree = "<group>"; };
 		9AB8DDD61C57D283000AF114 /* MOONLoggerTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MOONLoggerTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AB8DDD91C57D283000AF114 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9AB8DDDB1C57D283000AF114 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -39,7 +40,6 @@
 		9AB8DDEA1C57D283000AF114 /* MOONLoggerTesterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MOONLoggerTesterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AB8DDEE1C57D283000AF114 /* MOONLoggerTesterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOONLoggerTesterTests.swift; sourceTree = "<group>"; };
 		9AB8DDF01C57D283000AF114 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9AB8DDF91C57D2E3000AF114 /* MOONLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MOONLogger.swift; path = ../../MOONLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				9AB8DDD91C57D283000AF114 /* AppDelegate.swift */,
 				9A1109B41C59443D00EEB01E /* ViewFileViewController.swift */,
 				9AB8DDDB1C57D283000AF114 /* ViewController.swift */,
-				9AB8DDF91C57D2E3000AF114 /* MOONLogger.swift */,
+				9A93C8F21CE7B6670088467C /* MOONLogger.swift */,
 				9AB8DDDD1C57D283000AF114 /* Main.storyboard */,
 				9AB8DDE01C57D283000AF114 /* Assets.xcassets */,
 				9AB8DDE21C57D283000AF114 /* LaunchScreen.storyboard */,
@@ -203,9 +203,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A93C8F31CE7B6670088467C /* MOONLogger.swift in Sources */,
 				9AB8DDDC1C57D283000AF114 /* ViewController.swift in Sources */,
 				9A1109B51C59443D00EEB01E /* ViewFileViewController.swift in Sources */,
-				9AB8DDFA1C57D2E3000AF114 /* MOONLogger.swift in Sources */,
 				9AB8DDDA1C57D283000AF114 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
